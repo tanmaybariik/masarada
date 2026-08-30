@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 MIT License
 
 Copyright (c) 2026 Tanmay Barik
@@ -19,3 +20,12 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+=======
+Copyright (c) 2026 Tanmay Barik. All Rights Reserved.
+
+PROPRIETARY LICENSE
+
+This software and associated documentation files (the "Software") are the confidential and proprietary property of Tanmay Barik.
+
+Unauthorized copying, distribution, modification, public display, reverse engineering, or commercial use of this software, via any medium, is strictly prohibited without the prior express written permission of the copyright holder.
+>>>>>>> 678ba56 (Initial commit)

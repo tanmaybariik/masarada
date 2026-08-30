@@ -1,0 +1,22 @@
+{
+  "name": "Karunamoyee Ma Sarada",
+  "short_name": "মা সারদা",
+  "description": "করুণাময়ী মা সারদা - একটি আধ্যাত্মিক ও সেবামূলক প্রতিষ্ঠান।",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FFFDF9",
+  "theme_color": "#D94A2F",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/logo.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg"
+    },
+    {
+      "src": "/logo.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg"
+    }
+  ]
+}
