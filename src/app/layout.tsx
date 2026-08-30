@@ -49,6 +49,8 @@ import { cookies } from "next/headers";
 import { Language } from "@/lib/i18n/dictionaries";
 import PWAAutoInstallHandler from "@/components/common/PWAAutoInstallHandler";
 
+import AuthProvider from "@/components/providers/AuthProvider";
+
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const cookieStore = await cookies();
   const localeCookie = cookieStore.get('NEXT_LOCALE')?.value;
@@ -65,20 +67,22 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <link rel="apple-touch-icon" href="/logo.jpg" />
       </head>
       <body className="min-h-full flex flex-col font-sans bg-zinc-100 dark:bg-zinc-950 transition-colors">
-        <ThemeProvider>
-          <LanguageProvider initialLanguage={initialLanguage}>
-            <AudioProvider>
-              <PWAAutoInstallHandler />
-              <div className="flex-1 flex flex-col w-full max-w-md mx-auto bg-background min-h-screen relative shadow-2xl">
-                <main className="flex-1 pb-16 md:pb-0">
-                  {children}
-                </main>
-                <GlobalAudioPlayer />
-                <BottomNavigation />
-              </div>
-            </AudioProvider>
-          </LanguageProvider>
-        </ThemeProvider>
+        <AuthProvider>
+          <ThemeProvider>
+            <LanguageProvider initialLanguage={initialLanguage}>
+              <AudioProvider>
+                <PWAAutoInstallHandler />
+                <div className="flex-1 flex flex-col w-full max-w-md mx-auto bg-background min-h-screen relative shadow-2xl">
+                  <main className="flex-1 pb-16 md:pb-0">
+                    {children}
+                  </main>
+                  <GlobalAudioPlayer />
+                  <BottomNavigation />
+                </div>
+              </AudioProvider>
+            </LanguageProvider>
+          </ThemeProvider>
+        </AuthProvider>
       </body>
     </html>
   );
