@@ -9,6 +9,7 @@
     "lint": "eslint",
     "studio": "prisma studio",
     "db:push": "prisma db push",
+    "push": "git add . && git commit -m \"update: automated sync\" && git push origin main",
     "postinstall": "prisma generate"
   },
   "dependencies": {
