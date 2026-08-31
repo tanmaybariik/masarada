@@ -54,7 +54,7 @@ export default function AccountPage() {
 
       {/* User Info Card */}
       {status === "authenticated" && user ? (
-        <div className="bg-white dark:bg-zinc-900 rounded-3xl p-5 border border-secondary/20 shadow-sm flex items-center gap-4 mb-4 relative overflow-hidden">
+        <div className="bg-white dark:bg-zinc-900 rounded-3xl p-5 border border-secondary/20 shadow-sm flex items-center gap-4 mb-4 relative overflow-hidden group">
           <div className="relative w-16 h-16 rounded-2xl overflow-hidden border-2 border-primary/40 shadow-md flex-shrink-0 bg-primary/10 flex items-center justify-center">
             {user.image ? (
               <Image
@@ -84,10 +84,14 @@ export default function AccountPage() {
               )}
             </div>
             <p className="text-xs text-foreground/60 truncate">{user.email}</p>
-            <div className="mt-1.5 flex items-center gap-1.5">
+            <div className="mt-1.5 flex items-center justify-between">
               <span className="bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
                 <ShieldCheck size={11} /> {t('general.verified')}
               </span>
+              
+              <Link href="/account/profile" className="text-[10px] font-bold text-primary bg-primary/10 px-3 py-1 rounded-full hover:bg-primary/20 transition-colors">
+                {language === "bn" ? "এডিট প্রোফাইল" : "Edit Profile"}
+              </Link>
             </div>
           </div>
         </div>
