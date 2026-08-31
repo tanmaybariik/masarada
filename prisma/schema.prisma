@@ -16,8 +16,6 @@ model User {
   image         String?
   password      String?
   phone         String?
-  avatar        String?
-  location      String?
   role          String    @default("USER") // SUPER_ADMIN, ADMIN, USER, etc.
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt

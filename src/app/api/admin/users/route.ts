@@ -27,8 +27,6 @@ export async function GET(req: Request) {
         email: true,
         phone: true,
         role: true,
-        avatar: true,
-        location: true,
         createdAt: true,
       },
     });

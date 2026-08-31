@@ -14,15 +14,13 @@ export async function PUT(req: Request) {
     }
 
     const body = await req.json();
-    const { name, phone, avatar, location } = body;
+    const { name, phone } = body;
 
     const updatedUser = await prisma.user.update({
       where: { id: session.user.id },
       data: {
         name,
         phone,
-        avatar,
-        location,
       },
     });
 
@@ -32,8 +30,6 @@ export async function PUT(req: Request) {
         id: updatedUser.id,
         name: updatedUser.name,
         phone: updatedUser.phone,
-        avatar: updatedUser.avatar,
-        location: updatedUser.location,
       },
     });
   } catch (error) {
