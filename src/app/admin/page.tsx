@@ -51,7 +51,8 @@ import {
   LogOut,
   LogIn,
   LockKeyhole,
-  Loader2
+  Loader2,
+  Phone
 } from "lucide-react";
 import { useSession, signIn, signOut } from "next-auth/react";
 import { getStoredOrders, getStoredProducts, saveStoredProducts, Order, Product } from "@/lib/cartStore";
