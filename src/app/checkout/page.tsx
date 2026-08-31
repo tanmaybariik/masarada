@@ -71,7 +71,7 @@ export default function CheckoutPage() {
     }
   };
 
-  const handlePlaceOrder = (e: React.FormEvent) => {
+  const handlePlaceOrder = async (e: React.FormEvent) => {
     e.preventDefault();
 
     const orderId = `KMS-ORD-${Math.floor(1000 + Math.random() * 9000)}`;
@@ -101,7 +101,17 @@ export default function CheckoutPage() {
       trackingNumber: `KMS-TRK-${Date.now().toString().slice(-6)}`
     };
 
-    saveOrder(newOrder);
+    saveOrder(newOrder); // Keep local for guest checkout viewing
+    try {
+      await fetch("/api/admin/orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newOrder)
+      });
+    } catch(err) {
+      console.error("Failed to save order to server", err);
+    }
+
     setGeneratedOrder(newOrder);
     clearCart();
     setStep("invoice");

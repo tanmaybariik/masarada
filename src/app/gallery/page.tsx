@@ -15,12 +15,21 @@ export default function GalleryPage() {
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
 
   useEffect(() => {
-    setPhotos(getStoredGallery());
-    const handleUpdate = () => {
-      setPhotos(getStoredGallery());
+    const loadGallery = async () => {
+      try {
+        const res = await fetch("/api/admin/gallery");
+        const data = await res.json();
+        if (data.success) {
+          setPhotos(data.gallery);
+        }
+      } catch (err) {
+        console.error("Failed to load gallery:", err);
+      }
     };
-    window.addEventListener("gallery_updated", handleUpdate);
-    return () => window.removeEventListener("gallery_updated", handleUpdate);
+    loadGallery();
+
+    window.addEventListener("gallery_updated", loadGallery);
+    return () => window.removeEventListener("gallery_updated", loadGallery);
   }, []);
 
   const categories = [

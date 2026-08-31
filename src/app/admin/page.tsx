@@ -113,56 +113,9 @@ export default function AdminDashboardPage() {
   const [articles, setArticles] = useState<ReadingItem[]>([]);
   const [galleryPhotos, setGalleryPhotos] = useState<GalleryPhoto[]>([]);
 
-  const [events, setEvents] = useState<AdminEvent[]>([
-    {
-      id: "1",
-      title: "শ্রীরামকৃষ্ণ জন্মতিথি উৎসব",
-      titleEn: "Sri Ramakrishna Janmatithi Utsav",
-      date: "March 15, 2026",
-      time: "8:00 AM - 5:00 PM",
-      location: "Main Temple Premises",
-      price: 150,
-      availableTickets: 150,
-      image: "/event-festival.jpg"
-    },
-    {
-      id: "2",
-      title: "বিশেষ শিবরাত্রি পূজা",
-      titleEn: "Special Maha Shivaratri Puja",
-      date: "February 26, 2026",
-      time: "6:00 PM - 6:00 AM",
-      location: "Shiva Temple",
-      price: 200,
-      availableTickets: 0,
-      image: "/event-shivratri.jpg"
-    },
-    {
-      id: "3",
-      title: "শ্রীমা সারদা দেবীর বিশেষ আরতি ও ভক্তি সম্মেলন",
-      titleEn: "Holy Mother Special Arati & Bhakta Sammelan",
-      date: "April 2, 2026",
-      time: "4:00 PM - 8:00 PM",
-      location: "Natmandir & Auditorium",
-      price: 100,
-      availableTickets: 85,
-      image: "/event-arati.jpg"
-    }
-  ]);
-  
-  const [videos, setVideos] = useState<AdminVideo[]>([
-    { id: "KokXcI3zw2M", title: "Sri Sri Ramakrishna Kathamrita Discourse - Episode 22", speaker: "Pravrajika Pradiptaprana Mataji", duration: "42:15", views: 48200, isLive: true },
-    { id: "fnGBJu6sypo", title: "Naba Sajala Jala Dhara Kaya: Kali Kirtan", speaker: "Srijan Chattopadhyay", duration: "14:20", views: 22800 },
-    { id: "N2H7wQp82XQ", title: "Mayer Divya Darshan & Jayrambati Sacred Katha", speaker: "Swami Divyananda Maharaj", duration: "28:45", views: 32100 },
-    { id: "fE9xH2G8z4s", title: "Sarada Devi's Unconditional Love & Mercy", speaker: "Pravrajika Vedarupa", duration: "35:10", views: 18900 },
-    { id: "Y3qP0wM8z1A", title: "Bhakti Yoga Teachings of Sri Ramakrishna", speaker: "Swami Atmapriyananda", duration: "45:30", views: 26400 }
-  ]);
-
-  const [staffList, setStaffList] = useState<StaffMember[]>([
-    { id: "STF-01", name: "Subrata Das", phone: "+91 9830123456", email: "subrata.ashram@gmail.com", role: "Gate Scanner", status: "Active", joinedDate: "Jan 2026" },
-    { id: "STF-02", name: "Arnab Bhakta", phone: "+91 8918501779", email: "karunamoyeemasarada@gmail.com", role: "General Manager", status: "Active", joinedDate: "Dec 2025" },
-    { id: "STF-03", name: "Ranjan Mukherjee", phone: "+91 9748112233", email: "ranjan.dispatch@gmail.com", role: "Store Dispatch", status: "Active", joinedDate: "Feb 2026" },
-    { id: "STF-04", name: "Animesh Roy", phone: "+91 9433445566", email: "animesh.accounts@gmail.com", role: "Accounts Manager", status: "Active", joinedDate: "Jan 2026" }
-  ]);
+  const [events, setEvents] = useState<AdminEvent[]>([]);
+  const [videos, setVideos] = useState<AdminVideo[]>([]);
+  const [staffList, setStaffList] = useState<StaffMember[]>([]);
 
   // Users State
   const [users, setUsers] = useState<any[]>([]);
@@ -282,10 +235,23 @@ export default function AdminDashboardPage() {
   const [officialEmail, setOfficialEmail] = useState("karunamoyeemasarada@gmail.com");
 
   useEffect(() => {
-    setProducts(getStoredProducts());
-    setOrders(getStoredOrders());
-    setArticles(getStoredLibraryArticles());
-    setGalleryPhotos(getStoredGallery());
+    Promise.all([
+      fetch("/api/admin/products").then(res => res.json()),
+      fetch("/api/admin/orders").then(res => res.json()),
+      fetch("/api/admin/articles").then(res => res.json()),
+      fetch("/api/admin/gallery").then(res => res.json()),
+      fetch("/api/admin/events").then(res => res.json()),
+      fetch("/api/admin/videos").then(res => res.json()),
+      fetch("/api/admin/staff").then(res => res.json()),
+    ]).then(([prodRes, ordRes, artRes, galRes, evRes, vidRes, staffRes]) => {
+      if (prodRes.success) setProducts(prodRes.products);
+      if (ordRes.success) setOrders(ordRes.orders);
+      if (artRes.success) setArticles(artRes.articles);
+      if (galRes.success) setGalleryPhotos(galRes.gallery);
+      if (evRes.success) setEvents(evRes.events);
+      if (vidRes.success) setVideos(vidRes.videos);
+      if (staffRes.success) setStaffList(staffRes.staff);
+    });
   }, []);
 
   const triggerAlert = (msg: string) => {
@@ -312,27 +278,41 @@ export default function AdminDashboardPage() {
     setIsStaffModalOpen(true);
   };
 
-  const handleSaveStaff = (e: React.FormEvent) => {
+  const handleSaveStaff = async (e: React.FormEvent) => {
     e.preventDefault();
     if (editingStaffId) {
-      setStaffList(staffList.map(s => s.id === editingStaffId ? { ...s, ...staffForm } : s));
-      triggerAlert("Staff profile updated!");
+      const res = await fetch("/api/admin/staff", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: editingStaffId, ...staffForm })
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setStaffList(staffList.map(s => s.id === editingStaffId ? data.staffMember : s));
+        triggerAlert("Staff profile updated!");
+      }
     } else {
-      const newStaff: StaffMember = {
-        id: `STF-0${staffList.length + 1}`,
-        ...staffForm,
-        joinedDate: "Feb 2026"
-      };
-      setStaffList([...staffList, newStaff]);
-      triggerAlert("New staff member access granted!");
+      const res = await fetch("/api/admin/staff", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(staffForm)
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setStaffList([...staffList, data.staffMember]);
+        triggerAlert("New staff member access granted!");
+      }
     }
     setIsStaffModalOpen(false);
   };
 
-  const handleDeleteStaff = (id: string) => {
+  const handleDeleteStaff = async (id: string) => {
     if (confirm("Revoke this staff member's access?")) {
-      setStaffList(staffList.filter(s => s.id !== id));
-      triggerAlert("Staff access revoked.");
+      const res = await fetch(`/api/admin/staff?id=${id}`, { method: "DELETE" });
+      if (res.ok) {
+        setStaffList(staffList.filter(s => s.id !== id));
+        triggerAlert("Staff access revoked.");
+      }
     }
   };
 
@@ -349,28 +329,41 @@ export default function AdminDashboardPage() {
     setIsProductModalOpen(true);
   };
 
-  const handleSaveProduct = (e: React.FormEvent) => {
+  const handleSaveProduct = async (e: React.FormEvent) => {
     e.preventDefault();
-    let updated: Product[];
     if (editingProductId) {
-      updated = products.map(p => p.id === editingProductId ? { ...p, ...productForm } : p);
-      triggerAlert("Product updated successfully!");
+      const res = await fetch("/api/admin/products", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: editingProductId, ...productForm })
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setProducts(products.map(p => p.id === editingProductId ? data.product : p));
+        triggerAlert("Product updated successfully!");
+      }
     } else {
-      const newProduct: Product = { id: `prod_${Date.now()}`, ...productForm, rating: 5.0 };
-      updated = [newProduct, ...products];
-      triggerAlert("New product added to store!");
+      const res = await fetch("/api/admin/products", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...productForm, rating: 5.0 })
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setProducts([data.product, ...products]);
+        triggerAlert("New product added to store!");
+      }
     }
-    setProducts(updated);
-    saveStoredProducts(updated);
     setIsProductModalOpen(false);
   };
 
-  const handleDeleteProduct = (id: string) => {
+  const handleDeleteProduct = async (id: string) => {
     if (confirm("Are you sure you want to delete this product?")) {
-      const updated = products.filter(p => p.id !== id);
-      setProducts(updated);
-      saveStoredProducts(updated);
-      triggerAlert("Product removed.");
+      const res = await fetch(`/api/admin/products?id=${id}`, { method: "DELETE" });
+      if (res.ok) {
+        setProducts(products.filter(p => p.id !== id));
+        triggerAlert("Product removed.");
+      }
     }
   };
 
@@ -387,23 +380,41 @@ export default function AdminDashboardPage() {
     setIsEventModalOpen(true);
   };
 
-  const handleSaveEvent = (e: React.FormEvent) => {
+  const handleSaveEvent = async (e: React.FormEvent) => {
     e.preventDefault();
     if (editingEventId) {
-      setEvents(events.map(ev => ev.id === editingEventId ? { ...ev, ...eventForm } : ev));
-      triggerAlert("Event updated successfully!");
+      const res = await fetch("/api/admin/events", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: editingEventId, ...eventForm })
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setEvents(events.map(ev => ev.id === editingEventId ? data.event : ev));
+        triggerAlert("Event updated successfully!");
+      }
     } else {
-      const newEv: AdminEvent = { id: `evt_${Date.now()}`, ...eventForm };
-      setEvents([newEv, ...events]);
-      triggerAlert("New event created!");
+      const res = await fetch("/api/admin/events", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(eventForm)
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setEvents([data.event, ...events]);
+        triggerAlert("New event created!");
+      }
     }
     setIsEventModalOpen(false);
   };
 
-  const handleDeleteEvent = (id: string) => {
+  const handleDeleteEvent = async (id: string) => {
     if (confirm("Delete this event?")) {
-      setEvents(events.filter(e => e.id !== id));
-      triggerAlert("Event deleted.");
+      const res = await fetch(`/api/admin/events?id=${id}`, { method: "DELETE" });
+      if (res.ok) {
+        setEvents(events.filter(e => e.id !== id));
+        triggerAlert("Event deleted.");
+      }
     }
   };
 
@@ -419,26 +430,36 @@ export default function AdminDashboardPage() {
     triggerAlert("Video priority order updated!");
   };
 
-  const handleAddVideo = (e: React.FormEvent) => {
+  const handleAddVideo = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!videoForm.id || !videoForm.title) return;
-    const newV: AdminVideo = {
-      id: videoForm.id.trim(),
-      title: videoForm.title,
-      speaker: videoForm.speaker || "Karunamoyee Ma Sarada",
-      duration: videoForm.duration || "30:00",
-      views: 1200,
-      isLive: videoForm.isLive
-    };
-    setVideos([newV, ...videos]);
+    const res = await fetch("/api/admin/videos", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        id: videoForm.id.trim(),
+        title: videoForm.title,
+        speaker: videoForm.speaker || "Karunamoyee Ma Sarada",
+        duration: videoForm.duration || "30:00",
+        views: 1200,
+        isLive: videoForm.isLive
+      })
+    });
+    if (res.ok) {
+      const data = await res.json();
+      setVideos([data.video, ...videos]);
+      triggerAlert("Video added to channel playlist!");
+    }
     setIsVideoModalOpen(false);
-    triggerAlert("Video added to channel playlist!");
   };
 
-  const handleDeleteVideo = (id: string) => {
+  const handleDeleteVideo = async (id: string) => {
     if (confirm("Remove this video from playlist?")) {
-      setVideos(videos.filter(v => v.id !== id));
-      triggerAlert("Video removed.");
+      const res = await fetch(`/api/admin/videos?id=${id}`, { method: "DELETE" });
+      if (res.ok) {
+        setVideos(videos.filter(v => v.id !== id));
+        triggerAlert("Video removed.");
+      }
     }
   };
 
@@ -501,7 +522,7 @@ export default function AdminDashboardPage() {
     setIsArticleModalOpen(true);
   };
 
-  const handleSaveArticle = (e: React.FormEvent) => {
+  const handleSaveArticle = async (e: React.FormEvent) => {
     e.preventDefault();
     const sections = [
       {
@@ -521,35 +542,40 @@ export default function AdminDashboardPage() {
       });
     }
 
-    let updated: ReadingItem[];
     if (editingArticleId) {
-      updated = articles.map(a => a.id === editingArticleId ? {
-        ...a,
-        ...articleForm,
-        sections
-      } : a);
-      triggerAlert("Library article & text updated!");
+      const res = await fetch("/api/admin/articles", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: editingArticleId, ...articleForm, sections })
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setArticles(articles.map(a => a.id === editingArticleId ? data.article : a));
+        triggerAlert("Library article & text updated!");
+      }
     } else {
-      const newArticle: ReadingItem = {
-        id: `art_${Date.now()}`,
-        ...articleForm,
-        sections
-      };
-      updated = [newArticle, ...articles];
-      triggerAlert("New sacred article added to library!");
+      const res = await fetch("/api/admin/articles", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...articleForm, sections })
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setArticles([data.article, ...articles]);
+        triggerAlert("New sacred article added to library!");
+      }
     }
 
-    setArticles(updated);
-    saveStoredLibraryArticles(updated);
     setIsArticleModalOpen(false);
   };
 
-  const handleDeleteArticle = (id: string) => {
+  const handleDeleteArticle = async (id: string) => {
     if (confirm("Remove this article from spiritual library?")) {
-      const updated = articles.filter(a => a.id !== id);
-      setArticles(updated);
-      saveStoredLibraryArticles(updated);
-      triggerAlert("Article removed from library.");
+      const res = await fetch(`/api/admin/articles?id=${id}`, { method: "DELETE" });
+      if (res.ok) {
+        setArticles(articles.filter(a => a.id !== id));
+        triggerAlert("Article removed from library.");
+      }
     }
   };
 
@@ -566,32 +592,39 @@ export default function AdminDashboardPage() {
     setIsGalleryModalOpen(true);
   };
 
-  const handleSavePhoto = (e: React.FormEvent) => {
+  const handleSavePhoto = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!galleryForm.url) return;
-    const newPhoto: GalleryPhoto = {
-      id: `photo_${Date.now()}`,
-      name: galleryForm.name || galleryForm.enName,
-      enName: galleryForm.enName || galleryForm.name,
-      category: galleryForm.category,
-      categoryName: galleryForm.categoryName,
-      url: galleryForm.url,
-      quality: galleryForm.quality,
-      dateAdded: "Feb 2026"
-    };
-    const updated = [newPhoto, ...galleryPhotos];
-    setGalleryPhotos(updated);
-    saveStoredGallery(updated);
+    
+    const res = await fetch("/api/admin/gallery", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name: galleryForm.name || galleryForm.enName,
+        enName: galleryForm.enName || galleryForm.name,
+        category: galleryForm.category,
+        categoryName: galleryForm.categoryName,
+        url: galleryForm.url,
+        quality: galleryForm.quality,
+        dateAdded: "Feb 2026"
+      })
+    });
+
+    if (res.ok) {
+      const data = await res.json();
+      setGalleryPhotos([data.photo, ...galleryPhotos]);
+      triggerAlert("New photo added to sacred gallery!");
+    }
     setIsGalleryModalOpen(false);
-    triggerAlert("New photo added to sacred gallery!");
   };
 
-  const handleDeletePhoto = (id: string) => {
+  const handleDeletePhoto = async (id: string) => {
     if (confirm("Delete this photo from gallery?")) {
-      const updated = galleryPhotos.filter(p => p.id !== id);
-      setGalleryPhotos(updated);
-      saveStoredGallery(updated);
-      triggerAlert("Photo removed from gallery.");
+      const res = await fetch(`/api/admin/gallery?id=${id}`, { method: "DELETE" });
+      if (res.ok) {
+        setGalleryPhotos(galleryPhotos.filter(p => p.id !== id));
+        triggerAlert("Photo removed from gallery.");
+      }
     }
   };
 

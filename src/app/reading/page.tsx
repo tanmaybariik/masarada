@@ -25,12 +25,21 @@ export default function ReadingPage() {
   const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
-    setArticles(getStoredLibraryArticles());
-    const handleUpdate = () => {
-      setArticles(getStoredLibraryArticles());
+    const loadArticles = async () => {
+      try {
+        const res = await fetch("/api/admin/articles");
+        const data = await res.json();
+        if (data.success) {
+          setArticles(data.articles);
+        }
+      } catch (err) {
+        console.error("Failed to load articles:", err);
+      }
     };
-    window.addEventListener("library_updated", handleUpdate);
-    return () => window.removeEventListener("library_updated", handleUpdate);
+    loadArticles();
+
+    window.addEventListener("library_updated", loadArticles);
+    return () => window.removeEventListener("library_updated", loadArticles);
   }, []);
 
   const categories = [

@@ -61,20 +61,23 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
-// Initial placeholder models for other requirements
-
 model Event {
-  id          String   @id @default(cuid())
-  slug        String   @unique
-  title       String
-  description String?
-  date        DateTime
-  location    String?
-  capacity    Int      @default(0)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id               String   @id @default(cuid())
+  slug             String?  @unique // Optional to avoid migration errors
+  title            String
+  titleEn          String   @default("")
+  description      String?
+  date             String
+  time             String   @default("")
+  location         String?
+  price            Float    @default(0)
+  availableTickets Int      @default(0)
+  capacity         Int      @default(0)
+  image            String   @default("")
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
   
-  tickets     Ticket[]
+  tickets          Ticket[]
 }
 
 model Ticket {
@@ -91,12 +94,128 @@ model Ticket {
 }
 
 model Order {
-  id        String   @id @default(cuid())
-  userId    String
-  total     Float
-  status    String   @default("PENDING")
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id             String   @id @default(cuid())
+  userId         String?
+  date           String
+  subtotal       Float
+  discount       Float
+  couponDiscount Float    @default(0)
+  shipping       Float    @default(0)
+  total          Float
+  paymentMethod  String
+  status         String   @default("PENDING") // processing, shipped, delivered, etc.
+  statusText     String   @default("")
+  trackingNumber String   @default("")
   
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  // Customer details
+  customerName    String
+  customerPhone   String
+  customerAddress String
+  customerCity    String
+  customerPincode String
+  customerEmail   String?
+
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  
+  user           User?       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items          OrderItem[]
+}
+
+model OrderItem {
+  id        String  @id @default(cuid())
+  orderId   String
+  productId String
+  quantity  Int
+  
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+}
+
+model Product {
+  id            String   @id @default(cuid())
+  name          String
+  nameEn        String
+  originalPrice Float
+  price         Float
+  category      String
+  categoryName  String
+  image         String
+  inStock       Boolean  @default(true)
+  rating        Float    @default(5.0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  orderItems    OrderItem[]
+}
+
+model Video {
+  id          String   @id // Use YouTube ID
+  title       String
+  speaker     String
+  duration    String
+  views       Int      @default(0)
+  isLive      Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model StaffMember {
+  id         String   @id @default(cuid())
+  name       String
+  phone      String
+  email      String
+  role       String
+  status     String
+  joinedDate String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model GalleryPhoto {
+  id           String   @id @default(cuid())
+  name         String
+  enName       String
+  category     String
+  categoryName String
+  url          String
+  quality      String?
+  dateAdded    String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model LibraryArticle {
+  id               String   @id @default(cuid()) // Can be custom slug
+  titleBn          String
+  titleEn          String
+  subtitleBn       String
+  subtitleEn       String
+  authorBn         String
+  authorEn         String
+  category         String
+  categoryBn       String
+  categoryEn       String
+  readTimeBn       String
+  readTimeEn       String
+  image            String
+  featured         Boolean  @default(false)
+  highlightQuoteBn String
+  highlightQuoteEn String
+  wikiSource       String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  sections         ArticleSection[]
+}
+
+model ArticleSection {
+  id               String   @id @default(cuid())
+  articleId        String
+  headingBn        String
+  headingEn        String
+  textBn           String   @db.Text
+  textEn           String   @db.Text
+  
+  article          LibraryArticle @relation(fields: [articleId], references: [id], onDelete: Cascade)
 }

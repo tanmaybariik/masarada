@@ -55,7 +55,31 @@ export default function MyOrdersPage() {
 
   useEffect(() => {
     setMounted(true);
-    setOrders(getStoredOrders());
+    const loadOrders = async () => {
+      try {
+        const res = await fetch("/api/admin/orders");
+        const data = await res.json();
+        if (data.success) {
+          // Merge local orders (from getStoredOrders) with server orders, or just use server orders.
+          // For simplicity, we just use server orders if available. But anonymous users might only have local orders.
+          const localOrders = getStoredOrders();
+          const serverOrders = data.orders || [];
+          
+          // Combine by unique ID
+          const orderMap = new Map();
+          localOrders.forEach(o => orderMap.set(o.id, o));
+          serverOrders.forEach((o: any) => orderMap.set(o.id, o));
+          
+          setOrders(Array.from(orderMap.values()));
+        } else {
+          setOrders(getStoredOrders());
+        }
+      } catch(err) {
+        setOrders(getStoredOrders());
+        console.error("Failed to fetch orders:", err);
+      }
+    };
+    loadOrders();
     try {
       const saved = localStorage.getItem("kms_return_requests_v1");
       if (saved) setReturnHistory(JSON.parse(saved));

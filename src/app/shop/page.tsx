@@ -22,18 +22,26 @@ export default function ShopPage() {
       setCartCount(count);
     };
 
-    const updateProducts = () => {
-      setProducts(getStoredProducts());
+    const loadProducts = async () => {
+      try {
+        const res = await fetch("/api/admin/products");
+        const data = await res.json();
+        if (data.success) {
+          setProducts(data.products);
+        }
+      } catch (err) {
+        console.error("Failed to load products:", err);
+      }
     };
+    loadProducts();
 
     updateCount();
-    updateProducts();
 
     window.addEventListener("cart_updated", updateCount);
-    window.addEventListener("products_updated", updateProducts);
+    window.addEventListener("products_updated", loadProducts);
     return () => {
       window.removeEventListener("cart_updated", updateCount);
-      window.removeEventListener("products_updated", updateProducts);
+      window.removeEventListener("products_updated", loadProducts);
     };
   }, []);
 

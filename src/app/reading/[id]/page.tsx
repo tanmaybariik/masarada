@@ -30,7 +30,18 @@ export default function ReadingModePage({ params }: { params: Promise<{ id: stri
   const [allArticles, setAllArticles] = useState<ReadingItem[]>(LIBRARY_ARTICLES);
 
   useEffect(() => {
-    setAllArticles(getStoredLibraryArticles());
+    const loadArticles = async () => {
+      try {
+        const res = await fetch("/api/admin/articles");
+        const data = await res.json();
+        if (data.success) {
+          setAllArticles(data.articles);
+        }
+      } catch (err) {
+        console.error("Failed to load articles:", err);
+      }
+    };
+    loadArticles();
   }, []);
 
   const article = allArticles.find((a) => a.id === resolvedParams.id) || LIBRARY_ARTICLES.find((a) => a.id === resolvedParams.id);
