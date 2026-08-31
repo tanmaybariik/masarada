@@ -120,10 +120,10 @@ function LoginForm() {
       <div className="flex items-center justify-between mb-6">
         <Link href="/" className="inline-flex items-center gap-1.5 text-xs font-bold text-foreground/70 hover:text-primary transition-colors">
           <ArrowLeft size={16} />
-          <span>মূল পাতায় ফিরে যান</span>
+          <span>মূল পাতায় ফিরে যান / Back to Home</span>
         </Link>
         <span className="text-[11px] font-bold text-primary bg-primary/10 px-2.5 py-0.5 rounded-full">
-          নিরাপদ লগইন
+          নিরাপদ লগইন / Secure Login
         </span>
       </div>
 
@@ -137,8 +137,8 @@ function LoginForm() {
             priority
           />
         </div>
-        <h1 className="text-2xl font-black text-foreground tracking-tight">স্বাগতম</h1>
-        <p className="text-xs text-foreground/60 mt-1">করুণাময়ী মা সারদা ভক্ত সেবা ও ম্যানেজমেন্ট পোর্টাল</p>
+        <h1 className="text-2xl font-black text-foreground tracking-tight">স্বাগতম / Welcome</h1>
+        <p className="text-xs text-foreground/60 mt-1">করুণাময়ী মা সারদা ভক্ত সেবা ও ম্যানেজমেন্ট পোর্টাল<br/>Karunamoyee Ma Sarada Devotee Service & Management Portal</p>
       </div>
 
 
@@ -180,7 +180,7 @@ function LoginForm() {
               পাসওয়ার্ড / Password
             </label>
             <Link href="/forgot-password" className="text-[11px] text-primary font-bold hover:underline">
-              পাসওয়ার্ড ভুলে গেছেন?
+              পাসওয়ার্ড ভুলে গেছেন? / Forgot Password?
             </Link>
           </div>
           <div className="relative">
@@ -211,11 +211,11 @@ function LoginForm() {
           {loading ? (
             <>
               <Loader2 size={16} className="animate-spin" />
-              <span>যাচাই করা হচ্ছে...</span>
+              <span>যাচাই করা হচ্ছে... / Verifying...</span>
             </>
           ) : (
             <>
-              <span>লগইন করুন</span>
+              <span>লগইন করুন / Login</span>
               <ArrowRight size={15} />
             </>
           )}
@@ -223,9 +223,9 @@ function LoginForm() {
       </form>
 
       <div className="mt-8 pt-6 border-t border-secondary/15 text-center text-xs text-foreground/70">
-        অ্যাকাউন্ট নেই?{" "}
+        অ্যাকাউন্ট নেই? / Don't have an account?{" "}
         <Link href="/register" className="text-primary font-black hover:underline">
-          নতুন অ্যাকাউন্ট তৈরি করুন
+          নতুন অ্যাকাউন্ট তৈরি করুন / Create new account
         </Link>
       </div>
     </div>
@@ -236,7 +236,7 @@ export default function LoginPage() {
   return (
     <Suspense fallback={
       <div className="flex items-center justify-center min-h-screen text-xs font-bold text-foreground/60">
-        লোড হচ্ছে...
+        লোড হচ্ছে... / Loading...
       </div>
     }>
       <LoginForm />
