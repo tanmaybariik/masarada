@@ -20,7 +20,8 @@ import {
   Sparkles,
   ShieldCheck,
   LayoutDashboard,
-  UserPlus
+  UserPlus,
+  MapPin
 } from "lucide-react";
 import { useTranslation } from "@/lib/i18n/LanguageContext";
 import LanguageToggle from "@/components/layout/LanguageToggle";
@@ -56,7 +57,15 @@ export default function AccountPage() {
       {status === "authenticated" && user ? (
         <div className="bg-white dark:bg-zinc-900 rounded-3xl p-5 border border-secondary/20 shadow-sm flex items-center gap-4 mb-4 relative overflow-hidden group">
           <div className="relative w-16 h-16 rounded-2xl overflow-hidden border-2 border-primary/40 shadow-md flex-shrink-0 bg-primary/10 flex items-center justify-center">
-            {user.image ? (
+            {(user as any).avatar ? (
+              <Image
+                src={(user as any).avatar}
+                alt={user.name || "Avatar"}
+                fill
+                className="object-cover"
+                priority
+              />
+            ) : user.image ? (
               <Image
                 src={user.image}
                 alt={user.name || "Profile"}
@@ -84,6 +93,11 @@ export default function AccountPage() {
               )}
             </div>
             <p className="text-xs text-foreground/60 truncate">{user.email}</p>
+            {(user as any).location && (
+              <p className="text-[10px] text-foreground/70 truncate flex items-center gap-1 mt-0.5">
+                <MapPin size={10} /> {(user as any).location}
+              </p>
+            )}
             <div className="mt-1.5 flex items-center justify-between">
               <span className="bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
                 <ShieldCheck size={11} /> {t('general.verified')}

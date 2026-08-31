@@ -42,6 +42,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           email: user.email,
           role: user.role,
           phone: user.phone,
+          avatar: user.avatar,
+          location: user.location,
           image: user.image,
         };
       },
@@ -53,6 +55,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         token.id = user.id;
         token.role = (user as any).role || "USER";
         token.phone = (user as any).phone || "";
+        token.avatar = (user as any).avatar || null;
+        token.location = (user as any).location || null;
       }
       return token;
     },
@@ -61,6 +65,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         session.user.id = token.id as string;
         (session.user as any).role = (token.role as string) || "USER";
         (session.user as any).phone = (token.phone as string) || "";
+        (session.user as any).avatar = (token.avatar as string) || null;
+        (session.user as any).location = (token.location as string) || null;
       }
       return session;
     },

@@ -52,7 +52,8 @@ import {
   LogIn,
   LockKeyhole,
   Loader2,
-  Phone
+  Phone,
+  MapPin
 } from "lucide-react";
 import { useSession, signIn, signOut } from "next-auth/react";
 import { getStoredOrders, getStoredProducts, saveStoredProducts, Order, Product } from "@/lib/cartStore";
@@ -1505,9 +1506,18 @@ export default function AdminDashboardPage() {
                 {users.map((user) => (
                   <div key={user.id} className="p-3 hover:bg-secondary/5 flex flex-col gap-1">
                     <div className="flex justify-between items-start">
-                      <div>
-                        <h4 className="font-bold text-xs text-foreground">{user.name || "Unknown"}</h4>
-                        <p className="text-[10px] text-foreground/60 font-mono mt-0.5">{user.email}</p>
+                      <div className="flex items-center gap-2">
+                        <div className="w-8 h-8 rounded-full overflow-hidden border border-secondary/20 bg-secondary/10 flex items-center justify-center flex-shrink-0">
+                          {user.avatar ? (
+                            <Image src={user.avatar} alt={user.name || "Avatar"} width={32} height={32} className="object-cover w-full h-full" />
+                          ) : (
+                            <User size={16} className="text-foreground/40" />
+                          )}
+                        </div>
+                        <div>
+                          <h4 className="font-bold text-xs text-foreground">{user.name || "Unknown"}</h4>
+                          <p className="text-[10px] text-foreground/60 font-mono mt-0.5">{user.email}</p>
+                        </div>
                       </div>
                       <span className={`text-[9px] px-2 py-0.5 rounded-full font-bold uppercase ${
                         user.role === "SUPER_ADMIN" ? "bg-red-100 text-red-700" :
@@ -1517,13 +1527,23 @@ export default function AdminDashboardPage() {
                         {user.role}
                       </span>
                     </div>
-                    {user.phone && (
-                      <div className="text-[10px] text-foreground/70 flex items-center gap-1 mt-1">
-                        <Phone size={10} />
-                        {user.phone}
-                      </div>
-                    )}
-                    <div className="text-[9px] text-foreground/50 mt-1">
+                    
+                    <div className="flex flex-wrap gap-x-3 gap-y-1 mt-1 ml-10">
+                      {user.phone && (
+                        <div className="text-[10px] text-foreground/70 flex items-center gap-1">
+                          <Phone size={10} />
+                          {user.phone}
+                        </div>
+                      )}
+                      {user.location && (
+                        <div className="text-[10px] text-foreground/70 flex items-center gap-1">
+                          <MapPin size={10} />
+                          {user.location}
+                        </div>
+                      )}
+                    </div>
+                    
+                    <div className="text-[9px] text-foreground/50 mt-1 ml-10">
                       Joined: {new Date(user.createdAt).toLocaleDateString()}
                     </div>
                   </div>

@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, User, Phone, CheckCircle2, AlertCircle, Loader2, Save } from "lucide-react";
+import { ArrowLeft, User, Phone, CheckCircle2, AlertCircle, Loader2, Save, MapPin } from "lucide-react";
 import { useTranslation } from "@/lib/i18n/LanguageContext";
 
 export default function EditProfilePage() {
@@ -14,9 +14,17 @@ export default function EditProfilePage() {
 
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
+  const [avatar, setAvatar] = useState("");
+  const [location, setLocation] = useState("");
   const [loading, setLoading] = useState(false);
   const [successMsg, setSuccessMsg] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
+
+  const AVATAR_OPTIONS = [
+    { id: "/ramakrishna.png", name: language === "bn" ? "শ্রী রামকৃষ্ণ" : "Sri Ramakrishna" },
+    { id: "/maa-sarada-portrait.png", name: language === "bn" ? "মা সারদা" : "Maa Sarada" },
+    { id: "/swami-vivekananda.jpg", name: language === "bn" ? "স্বামী বিবেকানন্দ" : "Swami Vivekananda" },
+  ];
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -24,6 +32,8 @@ export default function EditProfilePage() {
     } else if (session?.user) {
       setName(session.user.name || "");
       setPhone((session.user as any).phone || "");
+      setAvatar((session.user as any).avatar || "");
+      setLocation((session.user as any).location || "");
     }
   }, [session, status, router]);
 
@@ -37,14 +47,14 @@ export default function EditProfilePage() {
       const res = await fetch("/api/user/profile", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, phone }),
+        body: JSON.stringify({ name, phone, avatar, location }),
       });
 
       if (!res.ok) {
         throw new Error("Failed to update profile");
       }
 
-      await update({ name, phone });
+      await update({ name, phone, avatar, location });
 
       setSuccessMsg(language === "bn" ? "প্রোফাইল আপডেট করা হয়েছে!" : "Profile updated successfully!");
       setTimeout(() => {
@@ -118,6 +128,44 @@ export default function EditProfilePage() {
         </div>
 
         <div>
+          <label className="block text-xs font-bold text-foreground/80 mb-3">
+            {language === "bn" ? "অ্যাভাটার নির্বাচন করুন" : "Choose Avatar"}
+          </label>
+          <div className="grid grid-cols-3 gap-3">
+            {AVATAR_OPTIONS.map((option) => (
+              <button
+                type="button"
+                key={option.id}
+                onClick={() => setAvatar(option.id)}
+                className={`flex flex-col items-center gap-2 p-2 rounded-xl border-2 transition-all ${
+                  avatar === option.id 
+                    ? "border-primary bg-primary/5 shadow-sm" 
+                    : "border-secondary/20 hover:border-secondary/50 bg-white dark:bg-zinc-900"
+                }`}
+              >
+                <div className="relative w-12 h-12 rounded-full overflow-hidden border border-secondary/20">
+                  <Image src={option.id} alt={option.name} fill className="object-cover" />
+                </div>
+                <span className="text-[9px] font-bold text-center leading-tight">
+                  {option.name}
+                </span>
+              </button>
+            ))}
+          </div>
+          <div className="flex justify-end mt-2">
+            {avatar && (
+              <button
+                type="button"
+                onClick={() => setAvatar("")}
+                className="text-[10px] font-bold text-rose-500 hover:text-rose-600 transition-colors"
+              >
+                {language === "bn" ? "অ্যাভাটার মুছুন" : "Remove Avatar"}
+              </button>
+            )}
+          </div>
+        </div>
+
+        <div>
           <label className="block text-xs font-bold text-foreground/80 mb-1.5">
             {language === "bn" ? "ফোন নম্বর" : "Phone Number"}
           </label>
@@ -129,6 +177,22 @@ export default function EditProfilePage() {
               onChange={(e) => setPhone(e.target.value)}
               className="w-full pl-10 pr-4 py-3 text-xs bg-white dark:bg-zinc-900 border border-secondary/30 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground"
               placeholder={language === "bn" ? "আপনার ফোন নম্বর লিখুন" : "Enter your phone number"}
+            />
+          </div>
+        </div>
+
+        <div>
+          <label className="block text-xs font-bold text-foreground/80 mb-1.5">
+            {language === "bn" ? "অবস্থান" : "Location"}
+          </label>
+          <div className="relative">
+            <MapPin size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-foreground/40" />
+            <input
+              type="text"
+              value={location}
+              onChange={(e) => setLocation(e.target.value)}
+              className="w-full pl-10 pr-4 py-3 text-xs bg-white dark:bg-zinc-900 border border-secondary/30 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground"
+              placeholder={language === "bn" ? "আপনার অবস্থান লিখুন (যেমন কলকাতা)" : "Enter your location (e.g. Kolkata)"}
             />
           </div>
         </div>
