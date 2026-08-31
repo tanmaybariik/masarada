@@ -639,7 +639,7 @@ export default function AdminDashboardPage() {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen max-w-md mx-auto p-6 text-center">
         <Loader2 size={36} className="animate-spin text-primary mb-3" />
-        <span className="text-xs font-bold text-foreground/70">অ্যাডমিন অনুমতি যাচাই করা হচ্ছে...</span>
+        <span className="text-xs font-bold text-foreground/70">Verifying Admin Permissions...</span>
       </div>
     );
   }
@@ -651,7 +651,7 @@ export default function AdminDashboardPage() {
         <div className="flex items-center justify-between mb-6">
           <Link href="/" className="inline-flex items-center gap-1.5 text-xs font-bold text-foreground/70 hover:text-primary transition-colors">
             <ArrowLeft size={16} />
-            <span>মূল পাতায় ফিরে যান</span>
+            <span>Return to Home</span>
           </Link>
           <span className="text-[10px] font-black text-rose-600 bg-rose-100 dark:bg-rose-950/50 px-2.5 py-0.5 rounded-full uppercase border border-rose-200">
             Restricted Zone
@@ -664,9 +664,9 @@ export default function AdminDashboardPage() {
           </div>
 
           <div>
-            <h2 className="text-xl font-black text-foreground tracking-tight">অ্যাডমিন সিকিউরিটি গেট</h2>
+            <h2 className="text-xl font-black text-foreground tracking-tight">Admin Security Gate</h2>
             <p className="text-xs text-foreground/60 mt-1">
-              এই নিয়ন্ত্রণ প্যানেলে প্রবেশ করার জন্য সুপার অ্যাডমিন অনুমোদন আবশ্যক
+              Super Admin approval is required to access this control panel
             </p>
           </div>
 
@@ -680,7 +680,7 @@ export default function AdminDashboardPage() {
 
           <form onSubmit={handleGateLogin} className="space-y-3 text-left">
             <div>
-              <label className="block text-[11px] font-bold text-foreground/70 mb-1">অ্যাডমিন ইমেইল</label>
+              <label className="block text-[11px] font-bold text-foreground/70 mb-1">Admin Email</label>
               <input
                 type="email"
                 value={gateEmail}
@@ -690,7 +690,7 @@ export default function AdminDashboardPage() {
               />
             </div>
             <div>
-              <label className="block text-[11px] font-bold text-foreground/70 mb-1">পাসওয়ার্ড</label>
+              <label className="block text-[11px] font-bold text-foreground/70 mb-1">Password</label>
               <input
                 type="password"
                 value={gatePassword}
@@ -704,14 +704,14 @@ export default function AdminDashboardPage() {
               disabled={gateLoading}
               className="w-full bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 py-2.5 rounded-xl font-extrabold text-xs shadow hover:opacity-90 transition-all disabled:opacity-50"
             >
-              প্রবেশ করুন / Submit
+              Submit
             </button>
           </form>
         </div>
 
         <div className="text-center">
           <Link href="/login" className="text-xs text-primary font-bold hover:underline">
-            সাধারণ লগইন পাতায় যান
+            Go to normal login page
           </Link>
         </div>
       </div>

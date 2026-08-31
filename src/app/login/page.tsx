@@ -53,10 +53,10 @@ function LoginForm() {
       });
 
       if (res?.error) {
-        setErrorMsg("ইমেইল বা পাসওয়ার্ড সঠিক নয় / Invalid email or password");
+        setErrorMsg("Invalid email or password");
         setLoading(false);
       } else {
-        setSuccessMsg("লগইন সফল হয়েছে! রিডাইরেক্ট করা হচ্ছে...");
+        setSuccessMsg("Login successful! Redirecting...");
         setTimeout(() => {
           if (email.toLowerCase().includes("karunamoyee") || email.toLowerCase().includes("admin")) {
             router.push("/admin");
@@ -67,7 +67,7 @@ function LoginForm() {
         }, 600);
       }
     } catch (err: any) {
-      setErrorMsg("লগইন করার সময় ত্রুটি হয়েছে / Something went wrong during login");
+      setErrorMsg("Something went wrong during login");
       setLoading(false);
     }
   };
@@ -96,10 +96,10 @@ function LoginForm() {
       });
 
       if (res?.error) {
-        setErrorMsg("দ্রুত লগইন সফল হয়নি। অনুগ্রহ করে পুনরায় চেষ্টা করুন।");
+        setErrorMsg("Quick login failed. Please try again.");
         setLoading(false);
       } else {
-        setSuccessMsg(type === "admin" ? "অ্যাডমিন লগইন সফল! অ্যাডমিন প্যানেলে নিয়ে যাওয়া হচ্ছে..." : "লগইন সফল! অ্যাকাউন্টে নিয়ে যাওয়া হচ্ছে...");
+        setSuccessMsg(type === "admin" ? "Admin login successful! Redirecting to admin panel..." : "Login successful! Redirecting to account...");
         setTimeout(() => {
           if (type === "admin") {
             router.push("/admin");
@@ -110,7 +110,7 @@ function LoginForm() {
         }, 600);
       }
     } catch (err) {
-      setErrorMsg("লগইন ত্রুটি");
+      setErrorMsg("Login error");
       setLoading(false);
     }
   };
@@ -120,10 +120,10 @@ function LoginForm() {
       <div className="flex items-center justify-between mb-6">
         <Link href="/" className="inline-flex items-center gap-1.5 text-xs font-bold text-foreground/70 hover:text-primary transition-colors">
           <ArrowLeft size={16} />
-          <span>মূল পাতায় ফিরে যান / Back to Home</span>
+          <span>Return to Home</span>
         </Link>
         <span className="text-[11px] font-bold text-primary bg-primary/10 px-2.5 py-0.5 rounded-full">
-          নিরাপদ লগইন / Secure Login
+          Secure Login
         </span>
       </div>
 
@@ -131,14 +131,14 @@ function LoginForm() {
         <div className="relative w-16 h-16 rounded-2xl bg-white shadow-md mx-auto mb-3 border border-secondary/20 flex items-center justify-center overflow-hidden">
           <Image
             src="/logo.jpg"
-            alt="মা সারদা লোগো"
+            alt="Ma Sarada Logo"
             fill
             className="object-cover"
             priority
           />
         </div>
-        <h1 className="text-2xl font-black text-foreground tracking-tight">স্বাগতম / Welcome</h1>
-        <p className="text-xs text-foreground/60 mt-1">করুণাময়ী মা সারদা ভক্ত সেবা ও ম্যানেজমেন্ট পোর্টাল<br/>Karunamoyee Ma Sarada Devotee Service & Management Portal</p>
+        <h1 className="text-2xl font-black text-foreground tracking-tight">Welcome</h1>
+        <p className="text-xs text-foreground/60 mt-1">Karunamoyee Ma Sarada Devotee Service & Management Portal</p>
       </div>
 
 
@@ -159,7 +159,7 @@ function LoginForm() {
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label className="block text-xs font-bold text-foreground/80 mb-1.5">
-            ইমেইল ঠিকানা / Email Address
+            Email Address
           </label>
           <div className="relative">
             <Mail size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-foreground/40" />
@@ -177,10 +177,10 @@ function LoginForm() {
         <div>
           <div className="flex items-center justify-between mb-1.5">
             <label className="text-xs font-bold text-foreground/80">
-              পাসওয়ার্ড / Password
+              Password
             </label>
             <Link href="/forgot-password" className="text-[11px] text-primary font-bold hover:underline">
-              পাসওয়ার্ড ভুলে গেছেন? / Forgot Password?
+              Forgot password?
             </Link>
           </div>
           <div className="relative">
@@ -211,11 +211,11 @@ function LoginForm() {
           {loading ? (
             <>
               <Loader2 size={16} className="animate-spin" />
-              <span>যাচাই করা হচ্ছে... / Verifying...</span>
+              <span>Verifying...</span>
             </>
           ) : (
             <>
-              <span>লগইন করুন / Login</span>
+              <span>Login</span>
               <ArrowRight size={15} />
             </>
           )}
@@ -223,9 +223,9 @@ function LoginForm() {
       </form>
 
       <div className="mt-8 pt-6 border-t border-secondary/15 text-center text-xs text-foreground/70">
-        অ্যাকাউন্ট নেই? / Don't have an account?{" "}
+        Don't have an account?{" "}
         <Link href="/register" className="text-primary font-black hover:underline">
-          নতুন অ্যাকাউন্ট তৈরি করুন / Create new account
+          Create a new account
         </Link>
       </div>
     </div>
@@ -236,7 +236,7 @@ export default function LoginPage() {
   return (
     <Suspense fallback={
       <div className="flex items-center justify-center min-h-screen text-xs font-bold text-foreground/60">
-        লোড হচ্ছে... / Loading...
+        Loading...
       </div>
     }>
       <LoginForm />
