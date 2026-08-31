@@ -23,93 +23,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         const email = String(credentials.email).trim().toLowerCase();
         const password = String(credentials.password);
 
-        let user = null;
-
-        try {
-          user = await prisma.user.findUnique({
-            where: { email },
-          });
-        } catch (dbErr) {
-          console.error("Prisma lookup error:", dbErr);
-        }
-
-        // Auto-provision default Master Admin if first time or fresh DB
-        if (
-          email === "karunamoyeemasarada@gmail.com" &&
-          (password === "admin123456" || password === "admin")
-        ) {
-          if (!user) {
-            try {
-              const hash = await bcrypt.hash("admin123456", 10);
-              user = await prisma.user.create({
-                data: {
-                  name: "শ্রী অর্ণব ভক্ত (Super Admin)",
-                  email: "karunamoyeemasarada@gmail.com",
-                  password: hash,
-                  phone: "+91 8918501779",
-                  role: "SUPER_ADMIN",
-                  image: "/arnab-profile.jpg",
-                },
-              });
-            } catch (createErr) {
-              // fallback in-memory user object
-              return {
-                id: "admin_master_1",
-                name: "শ্রী অর্ণব ভক্ত (Super Admin)",
-                email: "karunamoyeemasarada@gmail.com",
-                role: "SUPER_ADMIN",
-                phone: "+91 8918501779",
-                image: "/arnab-profile.jpg",
-              };
-            }
-          } else if (password === "admin123456" || password === "admin") {
-            return {
-              id: user.id,
-              name: user.name || "শ্রী অর্ণব ভক্ত (Super Admin)",
-              email: user.email || "karunamoyeemasarada@gmail.com",
-              role: "SUPER_ADMIN",
-              phone: user.phone || "+91 8918501779",
-              image: user.image || "/arnab-profile.jpg",
-            };
-          }
-        }
-
-        // Auto-provision demo Devotee user if first time
-        if (
-          email === "devotee@masarada.com" &&
-          (password === "user123456" || password === "devotee")
-        ) {
-          if (!user) {
-            try {
-              const hash = await bcrypt.hash("user123456", 10);
-              user = await prisma.user.create({
-                data: {
-                  name: "সুমন ব্যানার্জী (Devotee)",
-                  email: "devotee@masarada.com",
-                  password: hash,
-                  phone: "+91 9830123456",
-                  role: "USER",
-                },
-              });
-            } catch (err) {
-              return {
-                id: "devotee_demo_1",
-                name: "সুমন ব্যানার্জী (Devotee)",
-                email: "devotee@masarada.com",
-                role: "USER",
-                phone: "+91 9830123456",
-              };
-            }
-          } else {
-            return {
-              id: user.id,
-              name: user.name || "সুমন ব্যানার্জী (Devotee)",
-              email: user.email || "devotee@masarada.com",
-              role: user.role || "USER",
-              phone: user.phone || "+91 9830123456",
-            };
-          }
-        }
+        const user = await prisma.user.findUnique({
+          where: { email },
+        });
 
         if (!user || !user.password) {
           return null;
