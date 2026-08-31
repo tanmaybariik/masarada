@@ -105,7 +105,7 @@ export default function AdminDashboardPage() {
     status === "authenticated" && 
     ((currentUser as any)?.role === "SUPER_ADMIN" || 
      (currentUser as any)?.role === "ADMIN" || 
-     currentUser?.email === "karunamoyeemasarada@gmail.com");
+     currentUser?.email === "arnab@masarada.com");
 
   // Dynamic State
   const [products, setProducts] = useState<Product[]>([]);
@@ -232,7 +232,7 @@ export default function AdminDashboardPage() {
   // Platform Settings
   const [upiGatewayId, setUpiGatewayId] = useState("8918501779@axl");
   const [helplinePhone, setHelplinePhone] = useState("+91 8918501779");
-  const [officialEmail, setOfficialEmail] = useState("karunamoyeemasarada@gmail.com");
+  const [officialEmail, setOfficialEmail] = useState("arnab@masarada.com");
 
   useEffect(() => {
     Promise.all([
@@ -658,16 +658,16 @@ export default function AdminDashboardPage() {
   };
 
   const handleQuickAdminUnlock = async () => {
-    setGateEmail("karunamoyeemasarada@gmail.com");
-    setGatePassword("admin123456");
+    setGateEmail("arnab@masarada.com");
+    setGatePassword("ramakrishna@1998");
     setGateError("");
     setGateLoading(true);
 
     try {
       await fetch("/api/auth/seed");
       const res = await signIn("credentials", {
-        email: "karunamoyeemasarada@gmail.com",
-        password: "admin123456",
+        email: "arnab@masarada.com",
+        password: "ramakrishna@1998",
         redirect: false,
       });
 
@@ -818,7 +818,7 @@ export default function AdminDashboardPage() {
           </p>
           <div className="pt-1 flex items-center gap-1.5 text-[11px] text-amber-300/90 font-medium">
             <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
-            <span>Logged in as: <strong className="font-bold text-white">{currentUser?.email || "karunamoyeemasarada@gmail.com"}</strong> (SUPER_ADMIN)</span>
+            <span>Logged in as: <strong className="font-bold text-white">{currentUser?.email || "arnab@masarada.com"}</strong> (SUPER_ADMIN)</span>
           </div>
         </div>
 

@@ -12,7 +12,7 @@ export async function GET(req: Request) {
       !session?.user ||
       ((session.user as any).role !== "SUPER_ADMIN" &&
         (session.user as any).role !== "ADMIN" &&
-        session.user.email !== "karunamoyeemasarada@gmail.com")
+        session.user.email !== "arnab@masarada.com")
     ) {
       return NextResponse.json(
         { error: "Unauthorized" },

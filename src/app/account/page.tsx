@@ -32,7 +32,7 @@ export default function AccountPage() {
   const { data: session, status } = useSession();
 
   const user = session?.user;
-  const isAdmin = (user as any)?.role === "ADMIN" || (user as any)?.role === "SUPER_ADMIN" || user?.email === "karunamoyeemasarada@gmail.com";
+  const isAdmin = (user as any)?.role === "ADMIN" || (user as any)?.role === "SUPER_ADMIN" || user?.email === "arnab@masarada.com";
 
   return (
     <div className="flex flex-col min-h-screen max-w-md mx-auto bg-background p-4 pt-6 pb-24">
@@ -164,7 +164,7 @@ export default function AccountPage() {
         </a>
 
         <a
-          href="mailto:karunamoyeemasarada@gmail.com"
+          href="mailto:arnab@masarada.com"
           className="bg-white dark:bg-zinc-900 p-3 rounded-2xl border border-secondary/20 shadow-sm flex items-center gap-2.5 hover:border-primary/40 transition-all group"
         >
           <div className="w-9 h-9 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center font-bold flex-shrink-0 group-hover:scale-105 transition-transform">

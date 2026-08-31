@@ -73,8 +73,8 @@ export default function HelpCenterPage() {
 
     setTimeout(() => {
       let botAnswer = language === "bn"
-        ? "ধন্যবাদ আপনার বার্তার জন্য। আপনি যদি আরও বিস্তারিত তথ্য চান তবে আমাদের সরাসরি ফোন নম্বরে (৮৯১৮৫০১৭৭৯) বা ইমেইলে (karunamoyeemasarada@gmail.com) যোগাযোগ করতে পারেন। জয় মা!"
-        : "Thank you for your message. For more details, feel free to call us at 8918501779 or email karunamoyeemasarada@gmail.com. Joy Ma!";
+        ? "ধন্যবাদ আপনার বার্তার জন্য। আপনি যদি আরও বিস্তারিত তথ্য চান তবে আমাদের সরাসরি ফোন নম্বরে (৮৯১৮৫০১৭৭৯) বা ইমেইলে (arnab@masarada.com) যোগাযোগ করতে পারেন। জয় মা!"
+        : "Thank you for your message. For more details, feel free to call us at 8918501779 or email arnab@masarada.com. Joy Ma!";
 
       const lower = userText.toLowerCase();
 
@@ -96,8 +96,8 @@ export default function HelpCenterPage() {
           : "To track your shop order, go to Profile -> 'My Orders' (/account/orders). You can monitor 4-step live delivery progress.";
       } else if (lower.includes("contact") || lower.includes("phone") || lower.includes("call") || lower.includes("ফোন") || lower.includes("নম্বর")) {
         botAnswer = language === "bn"
-          ? "সরাসরি যোগাযোগ করতে কল করুন: ৮৯১৮৫০১৭৭৯ (8918501779) অথবা ইমেইল করুন: karunamoyeemasarada@gmail.com।"
-          : "Direct contact phone: 8918501779 | Email: karunamoyeemasarada@gmail.com.";
+          ? "সরাসরি যোগাযোগ করতে কল করুন: ৮৯১৮৫০১৭৭৯ (8918501779) অথবা ইমেইল করুন: arnab@masarada.com।"
+          : "Direct contact phone: 8918501779 | Email: arnab@masarada.com.";
       }
 
       const botMsg: Message = {
@@ -147,7 +147,7 @@ export default function HelpCenterPage() {
         </a>
 
         <a
-          href="mailto:karunamoyeemasarada@gmail.com"
+          href="mailto:arnab@masarada.com"
           className="bg-white p-3 rounded-2xl border border-secondary/20 shadow-sm flex items-center gap-2 hover:border-primary/40 transition-all group"
         >
           <div className="w-8 h-8 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center font-bold flex-shrink-0 group-hover:scale-105 transition-transform">

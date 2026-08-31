@@ -21,7 +21,7 @@ export async function POST(req: Request) {
   try {
     const session = await auth();
     const user = session?.user as any;
-    if (!user || (user.role !== "SUPER_ADMIN" && user.role !== "ADMIN" && user.email !== "karunamoyeemasarada@gmail.com")) {
+    if (!user || (user.role !== "SUPER_ADMIN" && user.role !== "ADMIN" && user.email !== "arnab@masarada.com")) {
       return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
     }
 
@@ -53,7 +53,7 @@ export async function PUT(req: Request) {
   try {
     const session = await auth();
     const user = session?.user as any;
-    if (!user || (user.role !== "SUPER_ADMIN" && user.role !== "ADMIN" && user.email !== "karunamoyeemasarada@gmail.com")) {
+    if (!user || (user.role !== "SUPER_ADMIN" && user.role !== "ADMIN" && user.email !== "arnab@masarada.com")) {
       return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
     }
 
@@ -85,7 +85,7 @@ export async function DELETE(req: Request) {
   try {
     const session = await auth();
     const user = session?.user as any;
-    if (!user || (user.role !== "SUPER_ADMIN" && user.role !== "ADMIN" && user.email !== "karunamoyeemasarada@gmail.com")) {
+    if (!user || (user.role !== "SUPER_ADMIN" && user.role !== "ADMIN" && user.email !== "arnab@masarada.com")) {
       return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
     }
 

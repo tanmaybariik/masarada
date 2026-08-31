@@ -41,7 +41,7 @@ export async function POST(req: Request) {
     // Auto-promote default admin email if registering
     let userRole = role || "USER";
     if (
-      normalizedEmail === "karunamoyeemasarada@gmail.com" ||
+      normalizedEmail === "arnab@masarada.com" ||
       normalizedEmail === "admin@masarada.com"
     ) {
       userRole = "SUPER_ADMIN";

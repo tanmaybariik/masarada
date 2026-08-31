@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma";
 
 export async function GET() {
   try {
-    const adminEmail = "karunamoyeemasarada@gmail.com";
+    const adminEmail = "arnab@masarada.com";
     const devoteeEmail = "devotee@masarada.com";
 
     // 1. Seed or update Admin
@@ -12,7 +12,7 @@ export async function GET() {
       where: { email: adminEmail },
     });
 
-    const adminHash = await bcrypt.hash("admin123456", 10);
+    const adminHash = await bcrypt.hash("ramakrishna@1998", 10);
 
     if (!adminExists) {
       await prisma.user.create({
@@ -57,7 +57,7 @@ export async function GET() {
       success: true,
       message: "Admin & Demo accounts initialized successfully",
       accounts: [
-        { email: adminEmail, role: "SUPER_ADMIN", pass: "admin123456" },
+        { email: adminEmail, role: "SUPER_ADMIN", pass: "ramakrishna@1998" },
         { email: devoteeEmail, role: "USER", pass: "user123456" },
       ],
     });

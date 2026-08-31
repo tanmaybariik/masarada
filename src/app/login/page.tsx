@@ -82,7 +82,7 @@ function LoginForm() {
     } catch (err) {}
 
     const creds = type === "admin" 
-      ? { email: "karunamoyeemasarada@gmail.com", password: "admin123456" }
+      ? { email: "arnab@masarada.com", password: "ramakrishna@1998" }
       : { email: "devotee@masarada.com", password: "user123456" };
 
     setEmail(creds.email);
