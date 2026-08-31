@@ -29,8 +29,8 @@ export default function EventsPage() {
   }, []);
 
   return (
-    <div className="flex flex-col min-h-screen max-w-md mx-auto bg-background p-4 pt-8 pb-20">
-      <div className="flex items-center justify-between mb-6">
+    <div className="flex flex-col min-h-screen max-w-md md:max-w-none w-full mx-auto bg-background p-4 pt-8 pb-20">
+      <div className="flex items-center justify-between mb-6 md:max-w-7xl mx-auto w-full">
         <Link href="/" className="flex items-center text-foreground/60 hover:text-primary transition-colors text-xs md:text-sm">
           <ArrowLeft size={18} className="mr-2" />
           {t('nav.home')}
@@ -44,12 +44,12 @@ export default function EventsPage() {
         />
       </div>
 
-      <div className="mb-6">
+      <div className="mb-6 md:max-w-7xl mx-auto w-full">
         <h1 className="text-xl md:text-2xl font-bold text-foreground">{t('events.title')}</h1>
         <p className="text-foreground/60 text-xs mt-1">{t('events.subtitle')}</p>
       </div>
 
-      <div className="space-y-6">
+      <div className="space-y-6 md:space-y-0 md:max-w-7xl mx-auto w-full">
         {loading ? (
           <div className="flex justify-center items-center py-20">
             <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary"></div>
@@ -73,8 +73,9 @@ export default function EventsPage() {
             </p>
           </div>
         ) : (
-          events.map(event => (
-            <div key={event.id} className="bg-white rounded-2xl overflow-hidden shadow-sm border border-secondary/20 hover:border-primary/40 transition-colors">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {events.map(event => (
+              <div key={event.id} className="bg-white rounded-2xl overflow-hidden shadow-sm border border-secondary/20 hover:border-primary/40 transition-colors">
               <div className="h-36 bg-secondary/30 relative">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={event.image} alt={event.title} className="w-full h-full object-cover" />
@@ -143,7 +144,8 @@ export default function EventsPage() {
                 </Link>
               </div>
             </div>
-          ))
+            ))}
+          </div>
         )}
       </div>
     </div>

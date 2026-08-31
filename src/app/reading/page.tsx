@@ -62,7 +62,7 @@ export default function ReadingPage() {
   const featuredArticle = articles.find(a => a.featured) || articles[0] || LIBRARY_ARTICLES[0];
 
   return (
-    <div className="flex flex-col min-h-screen max-w-md mx-auto bg-background p-4 pt-6 pb-28">
+    <div className="flex flex-col min-h-screen max-w-md md:max-w-3xl w-full mx-auto bg-background p-4 pt-6 pb-28 md:pb-6">
       {/* Top Bar */}
       <div className="flex items-center justify-between mb-4">
         <div>

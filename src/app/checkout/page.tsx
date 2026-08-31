@@ -122,7 +122,7 @@ export default function CheckoutPage() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen max-w-md mx-auto bg-background p-4 pt-6 pb-24">
+    <div className="flex flex-col min-h-screen max-w-md md:max-w-3xl w-full mx-auto bg-background p-4 pt-6 pb-24 md:pb-6">
       {/* Top Header */}
       {step !== "invoice" && (
         <div className="flex items-center justify-between mb-5">

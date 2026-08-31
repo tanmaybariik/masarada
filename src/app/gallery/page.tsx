@@ -44,9 +44,9 @@ export default function GalleryPage() {
     : photos.filter(p => p.category === selectedCategory);
 
   return (
-    <div className="flex flex-col w-full max-w-md mx-auto min-h-screen bg-background pb-24 text-foreground">
+    <div className="flex flex-col w-full max-w-md md:max-w-none mx-auto min-h-screen bg-background pb-24 text-foreground">
       {/* Header */}
-      <header className="px-4 py-4 flex items-center justify-between bg-white sticky top-0 z-10 border-b border-secondary/10 shadow-sm">
+      <header className="px-4 py-4 flex items-center justify-between bg-white sticky top-0 z-10 border-b border-secondary/10 shadow-sm md:max-w-7xl md:mx-auto w-full">
         <div className="flex items-center gap-3">
           <Link href="/" className="w-10 h-10 rounded-full bg-secondary/10 flex items-center justify-center text-primary hover:bg-secondary/20 transition-colors">
             <ArrowLeft size={20} />
@@ -65,7 +65,7 @@ export default function GalleryPage() {
       </header>
 
       {/* Category Pills */}
-      <div className="flex gap-2 overflow-x-auto px-4 py-3 scrollbar-hide border-b border-secondary/10 bg-white/50 backdrop-blur-sm">
+      <div className="flex gap-2 overflow-x-auto px-4 py-3 scrollbar-hide border-b border-secondary/10 bg-white/50 backdrop-blur-sm md:justify-center">
         {categories.map((cat) => (
           <button
             key={cat.id}
@@ -82,7 +82,7 @@ export default function GalleryPage() {
       </div>
 
       {/* Gallery Content */}
-      <div className="p-4 space-y-6">
+      <div className="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:max-w-7xl md:mx-auto w-full">
         {filteredPhotos.map((wallpaper) => (
           <div key={wallpaper.id} className="bg-white rounded-3xl overflow-hidden border border-secondary/20 shadow-md hover:shadow-lg transition-all">
             <div className="relative w-full aspect-[3/4] bg-secondary/10 flex items-center justify-center">

@@ -35,7 +35,7 @@ export default function AccountPage() {
   const isAdmin = (user as any)?.role === "ADMIN" || (user as any)?.role === "SUPER_ADMIN" || user?.email === "arnab@masarada.com";
 
   return (
-    <div className="flex flex-col min-h-screen max-w-md mx-auto bg-background p-4 pt-6 pb-24">
+    <div className="flex flex-col min-h-screen max-w-md md:max-w-2xl w-full mx-auto bg-background p-4 pt-6 pb-24 md:pb-6">
       {/* Top Header */}
       <div className="flex items-center justify-between mb-6">
         <div>

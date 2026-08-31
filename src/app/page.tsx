@@ -75,7 +75,7 @@ export default function Home() {
   };
 
   return (
-    <div className="flex flex-col w-full max-w-md mx-auto min-h-screen bg-background">
+    <div className="flex flex-col w-full max-w-md md:max-w-none mx-auto min-h-screen bg-background">
       {/* Header */}
       <header className="px-4 py-3 flex justify-between items-center bg-white sticky top-0 z-10 border-b border-secondary/10">
         <div className="flex items-center gap-2">
@@ -102,7 +102,7 @@ export default function Home() {
 
       <div className="px-4 py-4 space-y-6">
         {/* Hero Section - Sacred Darshan Automatic Slider */}
-        <section className="relative w-full h-56 md:h-60 rounded-3xl overflow-hidden flex flex-col justify-end p-4 text-white shadow-lg border border-secondary/20 group">
+        <section className="relative w-full h-56 md:aspect-[21/9] md:h-auto lg:aspect-[21/9] rounded-3xl overflow-hidden flex flex-col justify-end p-4 text-white shadow-lg border border-secondary/20 group">
           <Image 
             src={heroImages[heroIndex].src} 
             alt="Maa Sarada Darshan" 
@@ -128,7 +128,7 @@ export default function Home() {
         </section>
 
         {/* Daily Quote (Bani) */}
-        <section className="bg-accent/10 border border-accent/30 p-4 rounded-xl relative">
+        <section className="bg-accent/10 border border-accent/30 p-4 rounded-xl relative md:max-w-3xl md:mx-auto w-full">
           <div className="absolute -top-3 left-4 bg-background px-2 text-accent">
             <BookOpen size={20} />
           </div>
@@ -140,10 +140,10 @@ export default function Home() {
 
         {/* Quick Actions Grid */}
         <section>
-          <div className="flex justify-between items-center mb-3">
+          <div className="flex justify-between items-center mb-3 md:justify-center">
             <h3 className="text-base md:text-lg font-bold text-foreground">{t('section.activities')}</h3>
           </div>
-          <div className="flex gap-2.5 overflow-x-auto pb-2 scrollbar-hide">
+          <div className="flex gap-2.5 overflow-x-auto pb-2 scrollbar-hide md:flex-wrap md:justify-center">
             <div className="min-w-[68px]">
               <QuickAction href="/donate" icon={Heart} label={t('quick.donate')} color="bg-rose-100 text-rose-600" />
             </div>
@@ -172,7 +172,7 @@ export default function Home() {
         </section>
 
         {/* 350K+ Community Spotlight Banner */}
-        <section>
+        <section className="md:max-w-2xl md:mx-auto w-full">
           <Link
             href="/about"
             className="block bg-gradient-to-r from-amber-500/15 via-orange-500/10 to-primary/15 border border-primary/25 rounded-2xl p-4 shadow-sm hover:border-primary/50 transition-all group"
@@ -204,7 +204,7 @@ export default function Home() {
         </section>
 
         {/* Upcoming Event */}
-        <section>
+        <section className="md:max-w-2xl md:mx-auto w-full">
           <div className="flex justify-between items-center mb-3">
             <h3 className="text-base md:text-lg font-bold text-foreground">{t('section.upcomingEvents')}</h3>
             <Link href="/events" className="text-xs md:text-sm text-primary flex items-center font-bold">

@@ -56,7 +56,7 @@ export default function ShopPage() {
     : products.filter(p => p.category === activeCategory);
 
   return (
-    <div className="flex flex-col min-h-screen max-w-md mx-auto bg-background p-4 pt-6 pb-24">
+    <div className="flex flex-col min-h-screen max-w-md md:max-w-none w-full mx-auto bg-background p-4 pt-6 pb-24">
       {/* Top Header */}
       <div className="flex items-center justify-between mb-5">
         <Link href="/" className="flex items-center text-foreground/60 hover:text-primary transition-colors">
@@ -106,7 +106,7 @@ export default function ShopPage() {
       </div>
 
       {/* Filter Tabs */}
-      <div className="flex gap-2 overflow-x-auto pb-3.5 scrollbar-hide -mx-4 px-4">
+      <div className="flex gap-2 overflow-x-auto pb-3.5 scrollbar-hide -mx-4 px-4 md:justify-center md:mx-0 md:px-0">
         <button 
           onClick={() => setActiveCategory("all")} 
           className={`px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all ${
@@ -169,7 +169,7 @@ export default function ShopPage() {
           </p>
         </div>
       ) : (
-        <div className="grid grid-cols-2 gap-3.5">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3.5 md:gap-6">
           {filteredProducts.map(product => {
             const discountPercent = Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100);
             const isAdded = addedId === product.id;

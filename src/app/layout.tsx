@@ -72,7 +72,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             <LanguageProvider initialLanguage={initialLanguage}>
               <AudioProvider>
                 <PWAAutoInstallHandler />
-                <div className="flex-1 flex flex-col w-full max-w-md mx-auto bg-background min-h-screen relative shadow-2xl">
+                <div className="flex-1 flex flex-col w-full max-w-md md:max-w-none lg:max-w-7xl 2xl:max-w-[1600px] mx-auto bg-background min-h-screen relative shadow-2xl">
                   <main className="flex-1 pb-16 md:pb-0">
                     {children}
                   </main>

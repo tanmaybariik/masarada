@@ -390,7 +390,7 @@ export default function VideosPage() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen max-w-md mx-auto bg-background pb-28">
+    <div className="flex flex-col min-h-screen max-w-md md:max-w-none w-full mx-auto bg-background pb-28">
       {/* Top Header */}
       <header className="px-4 py-3.5 flex items-center justify-between bg-white sticky top-0 z-30 border-b border-secondary/10 shadow-sm">
         <div className="flex items-center gap-3">
@@ -425,7 +425,7 @@ export default function VideosPage() {
       </header>
 
       {/* Featured / Active Video Player */}
-      <div className="bg-black relative aspect-video w-full shadow-md z-20 group">
+      <div className="bg-black relative aspect-video w-full shadow-md z-20 group md:max-w-5xl md:mx-auto mt-0 md:mt-6 md:rounded-t-2xl overflow-hidden">
         <iframe
           ref={iframeRef}
           src={`https://www.youtube.com/embed/${selectedVideo.id}?autoplay=1&mute=1&enablejsapi=1&playsinline=1&controls=1&rel=0`}
@@ -460,7 +460,7 @@ export default function VideosPage() {
       </div>
 
       {/* Video Details Info Card */}
-      <div className="p-4 bg-white border-b border-secondary/10 shadow-sm">
+      <div className="p-4 bg-white border-b border-secondary/10 shadow-sm md:max-w-5xl md:mx-auto w-full md:rounded-b-2xl md:border md:mb-6">
         <div className="flex items-center gap-2 mb-2">
           {selectedVideo.isLive && (
             <span className="flex items-center gap-1.5 bg-red-600 text-white text-[10px] font-extrabold px-2.5 py-0.5 rounded-full uppercase tracking-wider animate-pulse">
@@ -500,7 +500,7 @@ export default function VideosPage() {
       </div>
 
       {/* Main Tabs Navigation (All Videos vs LIVE Stream vs Community) */}
-      <div className="p-4 pt-4 pb-2">
+      <div className="p-4 pt-4 pb-2 md:max-w-7xl md:mx-auto w-full">
         <div className="flex bg-secondary/10 p-1 rounded-2xl mb-3">
           <button
             onClick={() => setActiveTab('all')}
@@ -590,8 +590,8 @@ export default function VideosPage() {
       </div>
 
       {/* Video List */}
-      <div className="px-4 space-y-3.5">
-        <div className="flex items-center justify-between text-xs text-foreground/50 font-bold uppercase tracking-wider px-1">
+      <div className="px-4 space-y-3.5 md:space-y-0 md:max-w-7xl md:mx-auto w-full">
+        <div className="flex items-center justify-between text-xs text-foreground/50 font-bold uppercase tracking-wider px-1 md:mb-3">
           <span>
             {language === "bn" 
               ? `${filteredAndSortedVideos.length}টি ভিডিও পাওয়া গেছে`
@@ -604,6 +604,7 @@ export default function VideosPage() {
           </span>
         </div>
 
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
         {filteredAndSortedVideos.map((video) => {
           const isSelected = selectedVideo.id === video.id;
           return (
@@ -687,7 +688,7 @@ export default function VideosPage() {
       </div>
 
       {/* Community Banner Footer */}
-      <div className="p-4 mt-6">
+      <div className="p-4 mt-6 md:max-w-7xl md:mx-auto w-full">
         <a
           href="https://www.youtube.com/@KarunamoyeeMaSarada/community"
           target="_blank"

@@ -98,7 +98,7 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen max-w-md mx-auto bg-background p-4 pt-6 pb-12">
+    <div className="flex flex-col min-h-screen max-w-md md:max-w-lg w-full mx-auto bg-background p-4 pt-6 pb-12 md:pb-6 md:pt-12">
       <div className="flex items-center justify-between mb-6">
         <Link href="/login" className="inline-flex items-center gap-1.5 text-xs font-bold text-foreground/70 hover:text-primary transition-colors">
           <ArrowLeft size={16} />

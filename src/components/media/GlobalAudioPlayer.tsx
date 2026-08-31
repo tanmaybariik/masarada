@@ -10,7 +10,7 @@ export default function GlobalAudioPlayer() {
   if (!currentTrack) return null;
 
   return (
-    <div className="absolute bottom-20 left-0 right-0 px-2 z-40 max-w-md mx-auto">
+    <div className="absolute bottom-20 left-0 right-0 px-2 z-40 max-w-md md:max-w-none lg:max-w-7xl 2xl:max-w-[1600px] mx-auto">
       <div className="bg-foreground text-background rounded-xl p-3 shadow-lg flex items-center gap-3">
         <div className="w-10 h-10 rounded-md bg-secondary flex-shrink-0 overflow-hidden flex items-center justify-center relative">
           {currentTrack.coverArt ? (
