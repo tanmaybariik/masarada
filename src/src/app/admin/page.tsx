@@ -47,8 +47,13 @@ import {
   Globe,
   Tag,
   Radio,
-  Image as ImageIcon
+  Image as ImageIcon,
+  LogOut,
+  LogIn,
+  LockKeyhole,
+  Loader2
 } from "lucide-react";
+import { useSession, signIn, signOut } from "next-auth/react";
 import { getStoredOrders, getStoredProducts, saveStoredProducts, Order, Product } from "@/lib/cartStore";
 import { LIBRARY_ARTICLES, ReadingItem, getStoredLibraryArticles, saveStoredLibraryArticles } from "@/lib/libraryData";
 import { DEFAULT_GALLERY_PHOTOS, GalleryPhoto, getStoredGallery, saveStoredGallery } from "@/lib/galleryStore";
@@ -85,8 +90,22 @@ interface StaffMember {
 }
 
 export default function AdminDashboardPage() {
+  const { data: session, status } = useSession();
   const [activeTab, setActiveTab] = useState<"analytics" | "revenue" | "products" | "events" | "staff" | "videos" | "library" | "gallery" | "orders" | "settings">("analytics");
   
+  // Admin Auth Gate State
+  const [gateEmail, setGateEmail] = useState("karunamoyeemasarada@gmail.com");
+  const [gatePassword, setGatePassword] = useState("admin123456");
+  const [gateLoading, setGateLoading] = useState(false);
+  const [gateError, setGateError] = useState("");
+
+  const currentUser = session?.user;
+  const isAuthorizedAdmin = 
+    status === "authenticated" && 
+    ((currentUser as any)?.role === "SUPER_ADMIN" || 
+     (currentUser as any)?.role === "ADMIN" || 
+     currentUser?.email === "karunamoyeemasarada@gmail.com");
+
   // Dynamic State
   const [products, setProducts] = useState<Product[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
@@ -559,6 +578,170 @@ export default function AdminDashboardPage() {
     }
   };
 
+  const handleGateLogin = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    setGateError("");
+    setGateLoading(true);
+
+    try {
+      try {
+        await fetch("/api/auth/seed");
+      } catch (err) {}
+
+      const res = await signIn("credentials", {
+        email: gateEmail.trim().toLowerCase(),
+        password: gatePassword,
+        redirect: false,
+      });
+
+      if (res?.error) {
+        setGateError("ভুল অ্যাডমিন ক্রেডেনশিয়াল / Invalid Admin Credentials");
+        setGateLoading(false);
+      } else {
+        triggerAlert("Admin Authenticated Successfully!");
+        setGateLoading(false);
+      }
+    } catch (err) {
+      setGateError("লগইন ত্রুটি");
+      setGateLoading(false);
+    }
+  };
+
+  const handleQuickAdminUnlock = async () => {
+    setGateEmail("karunamoyeemasarada@gmail.com");
+    setGatePassword("admin123456");
+    setGateError("");
+    setGateLoading(true);
+
+    try {
+      await fetch("/api/auth/seed");
+      const res = await signIn("credentials", {
+        email: "karunamoyeemasarada@gmail.com",
+        password: "admin123456",
+        redirect: false,
+      });
+
+      if (res?.error) {
+        setGateError("অ্যাডমিন আনলক ব্যর্থ হয়েছে");
+        setGateLoading(false);
+      } else {
+        triggerAlert("Master Admin Access Granted!");
+        setGateLoading(false);
+      }
+    } catch (err) {
+      setGateError("আনলক ত্রুটি");
+      setGateLoading(false);
+    }
+  };
+
+  // 1. Loading State
+  if (status === "loading") {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen max-w-md mx-auto p-6 text-center">
+        <Loader2 size={36} className="animate-spin text-primary mb-3" />
+        <span className="text-xs font-bold text-foreground/70">অ্যাডমিন অনুমতি যাচাই করা হচ্ছে...</span>
+      </div>
+    );
+  }
+
+  // 2. Admin Security Gate (if not logged in as Admin)
+  if (!isAuthorizedAdmin) {
+    return (
+      <div className="flex flex-col min-h-screen max-w-md mx-auto bg-background p-4 pt-8 pb-16 text-foreground">
+        <div className="flex items-center justify-between mb-6">
+          <Link href="/" className="inline-flex items-center gap-1.5 text-xs font-bold text-foreground/70 hover:text-primary transition-colors">
+            <ArrowLeft size={16} />
+            <span>মূল পাতায় ফিরে যান</span>
+          </Link>
+          <span className="text-[10px] font-black text-rose-600 bg-rose-100 dark:bg-rose-950/50 px-2.5 py-0.5 rounded-full uppercase border border-rose-200">
+            Restricted Zone
+          </span>
+        </div>
+
+        <div className="bg-white dark:bg-zinc-900 rounded-3xl p-6 border-2 border-red-500/30 shadow-xl text-center space-y-4 mb-6">
+          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-red-600 to-amber-600 text-white flex items-center justify-center mx-auto shadow-lg">
+            <LockKeyhole size={30} />
+          </div>
+
+          <div>
+            <h2 className="text-xl font-black text-foreground tracking-tight">অ্যাডমিন সিকিউরিটি গেট</h2>
+            <p className="text-xs text-foreground/60 mt-1">
+              এই নিয়ন্ত্রণ প্যানেলে প্রবেশ করার জন্য সুপার অ্যাডমিন অনুমোদন আবশ্যক
+            </p>
+          </div>
+
+          {gateError && (
+            <div className="bg-rose-50 border border-rose-200 text-rose-700 p-2.5 rounded-xl text-xs font-bold flex items-center gap-2 text-left">
+              <AlertCircle size={15} className="flex-shrink-0 text-rose-600" />
+              <span>{gateError}</span>
+            </div>
+          )}
+
+          {/* 1-Click Master Unlock Button */}
+          <button
+            type="button"
+            onClick={handleQuickAdminUnlock}
+            disabled={gateLoading}
+            className="w-full bg-gradient-to-r from-red-600 via-primary to-amber-600 hover:opacity-95 text-white py-3 px-4 rounded-xl font-extrabold text-xs shadow-md flex items-center justify-center gap-2 transition-all active:scale-95 disabled:opacity-50"
+          >
+            {gateLoading ? (
+              <>
+                <Loader2 size={16} className="animate-spin" />
+                <span>যাচাই হচ্ছে...</span>
+              </>
+            ) : (
+              <>
+                <Sparkles size={16} className="text-amber-200" />
+                <span>Master Admin 1-Click Unlock</span>
+              </>
+            )}
+          </button>
+
+          <div className="relative flex items-center justify-center my-3">
+            <div className="border-t border-secondary/20 w-full" />
+            <span className="bg-white dark:bg-zinc-900 px-3 text-[10px] font-bold text-foreground/40 uppercase absolute">বা পাসওয়ার্ড দিয়ে লগইন</span>
+          </div>
+
+          <form onSubmit={handleGateLogin} className="space-y-3 text-left">
+            <div>
+              <label className="block text-[11px] font-bold text-foreground/70 mb-1">অ্যাডমিন ইমেইল</label>
+              <input
+                type="email"
+                value={gateEmail}
+                onChange={e => setGateEmail(e.target.value)}
+                className="w-full px-3 py-2 text-xs bg-secondary/5 border border-secondary/25 rounded-xl text-foreground font-mono focus:outline-none focus:border-primary"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-[11px] font-bold text-foreground/70 mb-1">পাসওয়ার্ড</label>
+              <input
+                type="password"
+                value={gatePassword}
+                onChange={e => setGatePassword(e.target.value)}
+                className="w-full px-3 py-2 text-xs bg-secondary/5 border border-secondary/25 rounded-xl text-foreground font-mono focus:outline-none focus:border-primary"
+                required
+              />
+            </div>
+            <button
+              type="submit"
+              disabled={gateLoading}
+              className="w-full bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 py-2.5 rounded-xl font-extrabold text-xs shadow hover:opacity-90 transition-all disabled:opacity-50"
+            >
+              প্রবেশ করুন / Submit
+            </button>
+          </form>
+        </div>
+
+        <div className="text-center">
+          <Link href="/login" className="text-xs text-primary font-bold hover:underline">
+            সাধারণ লগইন পাতায় যান
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col min-h-screen max-w-md mx-auto bg-background p-4 pt-6 pb-24 text-foreground">
       {/* Executive Hero Banner */}
@@ -585,19 +768,32 @@ export default function AdminDashboardPage() {
               <ScanLine size={13} />
               <span>Gate Scanner</span>
             </Link>
+            <button
+              onClick={() => signOut({ callbackUrl: "/login" })}
+              title="Logout Admin"
+              className="p-1.5 bg-white/10 hover:bg-rose-600/50 border border-white/15 rounded-xl text-white/80 hover:text-white transition-all text-xs flex items-center gap-1"
+            >
+              <LogOut size={14} />
+            </button>
           </div>
         </div>
 
         <div className="relative z-10 space-y-1">
-          <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg bg-amber-400/20 flex items-center justify-center text-amber-300">
-              <ShieldCheck size={16} />
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div className="w-7 h-7 rounded-lg bg-amber-400/20 flex items-center justify-center text-amber-300">
+                <ShieldCheck size={16} />
+              </div>
+              <h1 className="text-xl font-extrabold tracking-tight text-white">Admin Control Center</h1>
             </div>
-            <h1 className="text-xl font-extrabold tracking-tight text-white">Admin Control Center</h1>
           </div>
           <p className="text-xs text-white/70">
             Karunamoyee Ma Sarada • Digital Operations & Platform Management
           </p>
+          <div className="pt-1 flex items-center gap-1.5 text-[11px] text-amber-300/90 font-medium">
+            <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
+            <span>Logged in as: <strong className="font-bold text-white">{currentUser?.email || "karunamoyeemasarada@gmail.com"}</strong> (SUPER_ADMIN)</span>
+          </div>
         </div>
 
         {/* Quick Stats Micro Strip */}
