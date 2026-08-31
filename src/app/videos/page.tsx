@@ -686,6 +686,7 @@ export default function VideosPage() {
           </div>
         )}
       </div>
+      </div>
 
       {/* Community Banner Footer */}
       <div className="p-4 mt-6 md:max-w-7xl md:mx-auto w-full">
