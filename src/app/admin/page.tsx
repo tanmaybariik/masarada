@@ -91,7 +91,7 @@ interface StaffMember {
 
 export default function AdminDashboardPage() {
   const { data: session, status } = useSession();
-  const [activeTab, setActiveTab] = useState<"analytics" | "revenue" | "products" | "events" | "staff" | "videos" | "library" | "gallery" | "orders" | "settings">("analytics");
+  const [activeTab, setActiveTab] = useState<"analytics" | "revenue" | "products" | "events" | "staff" | "videos" | "library" | "gallery" | "orders" | "users" | "settings">("analytics");
   
   // Admin Auth Gate State
   const [gateEmail, setGateEmail] = useState("");
@@ -162,6 +162,22 @@ export default function AdminDashboardPage() {
     { id: "STF-03", name: "Ranjan Mukherjee", phone: "+91 9748112233", email: "ranjan.dispatch@gmail.com", role: "Store Dispatch", status: "Active", joinedDate: "Feb 2026" },
     { id: "STF-04", name: "Animesh Roy", phone: "+91 9433445566", email: "animesh.accounts@gmail.com", role: "Accounts Manager", status: "Active", joinedDate: "Jan 2026" }
   ]);
+
+  // Users State
+  const [users, setUsers] = useState<any[]>([]);
+  const [usersLoading, setUsersLoading] = useState(false);
+
+  useEffect(() => {
+    if (isAuthorizedAdmin && activeTab === "users" && users.length === 0) {
+      setUsersLoading(true);
+      fetch("/api/admin/users")
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) setUsers(data.users);
+        })
+        .finally(() => setUsersLoading(false));
+    }
+  }, [isAuthorizedAdmin, activeTab, users.length]);
 
   // Product Modal State
   const [isProductModalOpen, setIsProductModalOpen] = useState(false);
@@ -812,6 +828,7 @@ export default function AdminDashboardPage() {
           { id: "events", label: "Events", icon: CalendarHeart, count: events.length },
           { id: "videos", label: "Videos", icon: Video, count: videos.length },
           { id: "orders", label: "Orders", icon: Package, count: orders.length },
+          { id: "users", label: "Users", icon: Users, count: users.length || undefined },
           { id: "settings", label: "Settings", icon: Settings }
         ].map(tab => {
           const Icon = tab.icon;
@@ -1444,6 +1461,73 @@ export default function AdminDashboardPage() {
                   </div>
                 </div>
               ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* ========================================================= */}
+      {/* TAB 10: USERS */}
+      {/* ========================================================= */}
+      {activeTab === "users" && (
+        <div className="space-y-4 animate-in fade-in duration-300">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="font-bold text-sm text-foreground">Registered Users</h2>
+              <p className="text-[11px] text-foreground/60">View all users in the system</p>
+            </div>
+            <div className="flex gap-2">
+              <button 
+                onClick={() => {
+                  setUsers([]);
+                  setActiveTab("users");
+                }}
+                className="p-1.5 bg-secondary/10 hover:bg-secondary/20 rounded-lg text-foreground/70"
+              >
+                <RefreshCw size={14} />
+              </button>
+            </div>
+          </div>
+
+          {usersLoading ? (
+            <div className="py-8 flex justify-center items-center">
+              <Loader2 size={24} className="animate-spin text-primary" />
+            </div>
+          ) : users.length === 0 ? (
+            <div className="py-10 text-center bg-white dark:bg-zinc-900 border border-secondary/20 rounded-3xl">
+              <Users size={32} className="mx-auto text-foreground/30 mb-2" />
+              <p className="text-xs font-bold text-foreground/70">No users found</p>
+            </div>
+          ) : (
+            <div className="bg-white dark:bg-zinc-900 border border-secondary/20 rounded-2xl overflow-hidden shadow-sm">
+              <div className="divide-y divide-secondary/10">
+                {users.map((user) => (
+                  <div key={user.id} className="p-3 hover:bg-secondary/5 flex flex-col gap-1">
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <h4 className="font-bold text-xs text-foreground">{user.name || "Unknown"}</h4>
+                        <p className="text-[10px] text-foreground/60 font-mono mt-0.5">{user.email}</p>
+                      </div>
+                      <span className={`text-[9px] px-2 py-0.5 rounded-full font-bold uppercase ${
+                        user.role === "SUPER_ADMIN" ? "bg-red-100 text-red-700" :
+                        user.role === "ADMIN" ? "bg-amber-100 text-amber-700" :
+                        "bg-primary/10 text-primary"
+                      }`}>
+                        {user.role}
+                      </span>
+                    </div>
+                    {user.phone && (
+                      <div className="text-[10px] text-foreground/70 flex items-center gap-1 mt-1">
+                        <Phone size={10} />
+                        {user.phone}
+                      </div>
+                    )}
+                    <div className="text-[9px] text-foreground/50 mt-1">
+                      Joined: {new Date(user.createdAt).toLocaleDateString()}
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           )}
         </div>
