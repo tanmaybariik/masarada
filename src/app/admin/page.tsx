@@ -677,30 +677,6 @@ export default function AdminDashboardPage() {
             </div>
           )}
 
-          {/* 1-Click Master Unlock Button */}
-          <button
-            type="button"
-            onClick={handleQuickAdminUnlock}
-            disabled={gateLoading}
-            className="w-full bg-gradient-to-r from-red-600 via-primary to-amber-600 hover:opacity-95 text-white py-3 px-4 rounded-xl font-extrabold text-xs shadow-md flex items-center justify-center gap-2 transition-all active:scale-95 disabled:opacity-50"
-          >
-            {gateLoading ? (
-              <>
-                <Loader2 size={16} className="animate-spin" />
-                <span>যাচাই হচ্ছে...</span>
-              </>
-            ) : (
-              <>
-                <Sparkles size={16} className="text-amber-200" />
-                <span>Master Admin 1-Click Unlock</span>
-              </>
-            )}
-          </button>
-
-          <div className="relative flex items-center justify-center my-3">
-            <div className="border-t border-secondary/20 w-full" />
-            <span className="bg-white dark:bg-zinc-900 px-3 text-[10px] font-bold text-foreground/40 uppercase absolute">বা পাসওয়ার্ড দিয়ে লগইন</span>
-          </div>
 
           <form onSubmit={handleGateLogin} className="space-y-3 text-left">
             <div>
