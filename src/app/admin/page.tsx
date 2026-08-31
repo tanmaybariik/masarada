@@ -58,6 +58,7 @@ import { useSession, signIn, signOut } from "next-auth/react";
 import { getStoredOrders, getStoredProducts, saveStoredProducts, Order, Product } from "@/lib/cartStore";
 import { LIBRARY_ARTICLES, ReadingItem, getStoredLibraryArticles, saveStoredLibraryArticles } from "@/lib/libraryData";
 import { DEFAULT_GALLERY_PHOTOS, GalleryPhoto, getStoredGallery, saveStoredGallery } from "@/lib/galleryStore";
+import ImageUploader from "@/components/admin/ImageUploader";
 
 interface AdminVideo {
   id: string;
@@ -92,7 +93,7 @@ interface StaffMember {
 
 export default function AdminDashboardPage() {
   const { data: session, status } = useSession();
-  const [activeTab, setActiveTab] = useState<"analytics" | "revenue" | "products" | "events" | "staff" | "videos" | "library" | "gallery" | "orders" | "users" | "settings">("analytics");
+  const [activeTab, setActiveTab] = useState<"analytics" | "slider" | "revenue" | "products" | "events" | "staff" | "videos" | "library" | "gallery" | "orders" | "users" | "settings">("analytics");
   
   // Admin Auth Gate State
   const [gateEmail, setGateEmail] = useState("");
@@ -132,6 +133,84 @@ export default function AdminDashboardPage() {
         .finally(() => setUsersLoading(false));
     }
   }, [isAuthorizedAdmin, activeTab, users.length]);
+
+  // Slider State
+  const [slides, setSlides] = useState<any[]>([]);
+  const [slidesLoading, setSlidesLoading] = useState(false);
+  const [isSlideModalOpen, setIsSlideModalOpen] = useState(false);
+  const [editingSlideId, setEditingSlideId] = useState<string | null>(null);
+  const [slideForm, setSlideForm] = useState({
+    title: "",
+    subtitle: "",
+    image: "",
+    order: 0,
+    isActive: true
+  });
+
+  const loadSlides = async () => {
+    setSlidesLoading(true);
+    try {
+      const res = await fetch("/api/admin/hero-slides");
+      const data = await res.json();
+      if (data.success) setSlides(data.slides);
+    } catch (error) {}
+    setSlidesLoading(false);
+  };
+
+  useEffect(() => {
+    if (isAuthorizedAdmin && activeTab === "slider" && slides.length === 0) {
+      loadSlides();
+    }
+  }, [isAuthorizedAdmin, activeTab]);
+
+  const handleOpenAddSlide = () => {
+    setEditingSlideId(null);
+    setSlideForm({ title: "", subtitle: "", image: "", order: slides.length, isActive: true });
+    setIsSlideModalOpen(true);
+  };
+
+  const handleOpenEditSlide = (slide: any) => {
+    setEditingSlideId(slide.id);
+    setSlideForm({
+      title: slide.title,
+      subtitle: slide.subtitle,
+      image: slide.image,
+      order: slide.order,
+      isActive: slide.isActive
+    });
+    setIsSlideModalOpen(true);
+  };
+
+  const handleDeleteSlide = async (id: string) => {
+    if (!confirm("Are you sure you want to delete this slide?")) return;
+    try {
+      const res = await fetch(`/api/admin/hero-slides?id=${id}`, { method: "DELETE" });
+      if (res.ok) {
+        setSlides(slides.filter(s => s.id !== id));
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleSaveSlide = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const method = editingSlideId ? "PUT" : "POST";
+      const body = JSON.stringify(editingSlideId ? { id: editingSlideId, ...slideForm } : slideForm);
+      const res = await fetch("/api/admin/hero-slides", {
+        method,
+        headers: { "Content-Type": "application/json" },
+        body
+      });
+      if (res.ok) {
+        setIsSlideModalOpen(false);
+        loadSlides();
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   // Product Modal State
   const [isProductModalOpen, setIsProductModalOpen] = useState(false);
@@ -1659,17 +1738,7 @@ export default function AdminDashboardPage() {
                 />
               </div>
 
-              <div>
-                <label className="font-bold text-foreground/80 block mb-1">Cover Image Path / Asset</label>
-                <input
-                  type="text"
-                  required
-                  placeholder="/maa-sarada-hero.jpg or image URL"
-                  value={articleForm.image}
-                  onChange={e => setArticleForm({ ...articleForm, image: e.target.value })}
-                  className="w-full bg-white border border-secondary/20 rounded-xl p-2.5 font-mono text-xs focus:outline-none focus:border-primary"
-                />
-              </div>
+              <ImageUploader label="Cover Image Path / Asset" value={articleForm.image} onChange={(val) => setArticleForm({ ...articleForm, image: val })} />
 
               <div className="grid grid-cols-2 gap-2">
                 <div>
@@ -1800,17 +1869,7 @@ export default function AdminDashboardPage() {
                 />
               </div>
 
-              <div>
-                <label className="font-bold text-foreground/80 block mb-1">Image URL / File Path</label>
-                <input
-                  type="text"
-                  required
-                  placeholder="e.g. /maa-sarada-feet.jpg or https://..."
-                  value={galleryForm.url}
-                  onChange={e => setGalleryForm({ ...galleryForm, url: e.target.value })}
-                  className="w-full bg-white border border-secondary/20 rounded-xl p-2.5 font-mono text-xs focus:outline-none focus:border-primary"
-                />
-              </div>
+              <ImageUploader label="Image URL / File Path" value={galleryForm.url} onChange={(val) => setGalleryForm({ ...galleryForm, url: val })} />
 
               <div className="grid grid-cols-2 gap-2">
                 <div>
@@ -1949,15 +2008,7 @@ export default function AdminDashboardPage() {
                 </div>
               </div>
 
-              <div>
-                <label className="font-bold text-foreground/80 block mb-1">Image Asset Path / URL</label>
-                <input
-                  type="text"
-                  value={productForm.image}
-                  onChange={e => setProductForm({ ...productForm, image: e.target.value })}
-                  className="w-full bg-white border border-secondary/20 rounded-xl p-2.5 focus:outline-none focus:border-primary font-mono text-[11px]"
-                />
-              </div>
+              <ImageUploader label="Image Asset Path / URL" value={productForm.image} onChange={(val) => setProductForm({ ...productForm, image: val })} />
 
               <button
                 type="submit"

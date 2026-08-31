@@ -16,7 +16,7 @@ export default function Home() {
   const [holdTimer, setHoldTimer] = useState<NodeJS.Timeout | null>(null);
   const [isHolding, setIsHolding] = useState(false);
 
-  const heroImages = [
+  const [heroImages, setHeroImages] = useState([
     {
       src: "/maa-sarada-hero.jpg",
       position: "object-top"
@@ -29,7 +29,23 @@ export default function Home() {
       src: "/maa-sarada-feet.jpg",
       position: "object-center"
     }
-  ];
+  ]);
+
+  useEffect(() => {
+    fetch('/api/public/hero-slides')
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && data.slides.length > 0) {
+          setHeroImages(data.slides.map((s: any) => ({
+            src: s.image,
+            position: "object-top", // Default position
+            title: s.title,
+            subtitle: s.subtitle
+          })));
+        }
+      })
+      .catch(console.error);
+  }, []);
 
   // Automatic slide transition every 4 seconds
   useEffect(() => {
