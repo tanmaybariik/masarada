@@ -53,7 +53,8 @@ import {
   LockKeyhole,
   Loader2,
   Phone,
-  MapPin
+  MapPin,
+  User
 } from "lucide-react";
 import { useSession, signIn, signOut } from "next-auth/react";
 import { getStoredOrders, getStoredProducts, saveStoredProducts, Order, Product } from "@/lib/cartStore";

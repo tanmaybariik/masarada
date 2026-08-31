@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowLeft, User, Phone, CheckCircle2, AlertCircle, Loader2, Save, MapPin } from "lucide-react";
 import { useTranslation } from "@/lib/i18n/LanguageContext";
 
