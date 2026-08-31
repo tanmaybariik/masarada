@@ -150,85 +150,105 @@ export default function ShopPage() {
       </div>
 
       {/* Products Grid */}
-      <div className="grid grid-cols-2 gap-3.5">
-        {filteredProducts.map(product => {
-          const discountPercent = Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100);
-          const isAdded = addedId === product.id;
-
-          return (
-            <div 
-              key={product.id} 
-              className="bg-white rounded-2xl overflow-hidden shadow-sm border border-secondary/20 flex flex-col hover:border-primary/40 transition-all group relative"
-            >
-              {/* Discount Badge & Share */}
-              <div className="absolute top-2 left-2 z-10 bg-rose-600 text-white text-[10px] font-extrabold px-2 py-0.5 rounded-md shadow-sm">
-                -{discountPercent}% {language === "bn" ? "ছাড়" : "OFF"}
-              </div>
-
-              <div className="absolute top-2 right-2 z-10">
-                <ShareButton
-                  title={product.name}
-                  text={`করুণাময়ী মা সারদা বিপণী — ${product.name} (${product.price}):`}
-                  url={`/shop`}
-                  variant="icon"
-                  className="w-7 h-7"
-                />
-              </div>
-
-              {/* Product Image */}
-              <div className="aspect-square relative bg-secondary/10 overflow-hidden">
-                <Image 
-                  src={product.image} 
-                  alt={product.name} 
-                  fill 
-                  className="object-cover group-hover:scale-105 transition-transform duration-300" 
-                />
-              </div>
-
-              {/* Details */}
-              <div className="p-3 flex flex-col flex-1">
-                <div className="flex items-center justify-between mb-1">
-                  <span className="text-[9px] text-foreground/50 font-bold uppercase tracking-wider">
-                    {product.categoryName}
-                  </span>
-                  <div className="flex items-center text-[10px] text-amber-500 font-bold gap-0.5">
-                    <Star size={11} fill="currentColor" />
-                    <span>{product.rating}</span>
-                  </div>
-                </div>
-
-                <h2 className="text-xs font-bold text-foreground mb-2 line-clamp-2 leading-snug flex-1">
-                  {language === "bn" ? product.name : product.nameEn}
-                </h2>
-
-                {/* Price and Discount */}
-                <div className="flex items-center justify-between mt-auto pt-2 border-t border-secondary/10">
-                  <div>
-                    <span className="text-[11px] text-foreground/40 line-through block leading-none">
-                      ₹{product.originalPrice}
-                    </span>
-                    <span className="text-primary font-extrabold text-sm leading-tight">
-                      ₹{product.price}
-                    </span>
-                  </div>
-
-                  <button 
-                    onClick={() => handleAdd(product)}
-                    className={`p-2 rounded-xl transition-all shadow-sm flex items-center justify-center ${
-                      isAdded 
-                        ? "bg-emerald-600 text-white" 
-                        : "bg-primary text-white hover:bg-primary/90"
-                    }`}
-                    title="কার্টে যোগ করুন"
-                  >
-                    {isAdded ? <Check size={16} /> : <Plus size={16} />}
-                  </button>
-                </div>
-              </div>
+      {filteredProducts.length === 0 ? (
+        <div className="flex flex-col items-center justify-center py-20 px-4 text-center">
+          <div className="relative w-24 h-24 mb-6">
+            <div className="absolute inset-0 bg-primary/10 rounded-full animate-ping opacity-75"></div>
+            <div className="relative bg-white border border-primary/20 w-24 h-24 rounded-full flex items-center justify-center shadow-lg">
+              <ShoppingBag size={36} className="text-primary animate-pulse" />
+              <Sparkles size={16} className="text-amber-500 absolute top-4 right-4 animate-bounce" />
             </div>
-          );
-        })}
-      </div>
+          </div>
+          <h3 className="text-xl font-black text-foreground mb-2 tracking-tight">
+            {language === "bn" ? "শিগগিরই আসছে!" : "Coming Soon!"}
+          </h3>
+          <p className="text-sm text-foreground/60 max-w-[250px] leading-relaxed">
+            {language === "bn" 
+              ? "এই বিভাগে বর্তমানে কোনো সামগ্রী নেই। নতুন প্রসাদ ও পূজার সামগ্রীর জন্য অপেক্ষায় থাকুন।" 
+              : "No items are available in this category yet. Stay tuned for new holy items and prasad."}
+          </p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-2 gap-3.5">
+          {filteredProducts.map(product => {
+            const discountPercent = Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100);
+            const isAdded = addedId === product.id;
+
+            return (
+              <div 
+                key={product.id} 
+                className="bg-white rounded-2xl overflow-hidden shadow-sm border border-secondary/20 flex flex-col hover:border-primary/40 transition-all group relative"
+              >
+                {/* Discount Badge & Share */}
+                <div className="absolute top-2 left-2 z-10 bg-rose-600 text-white text-[10px] font-extrabold px-2 py-0.5 rounded-md shadow-sm">
+                  -{discountPercent}% {language === "bn" ? "ছাড়" : "OFF"}
+                </div>
+
+                <div className="absolute top-2 right-2 z-10">
+                  <ShareButton
+                    title={product.name}
+                    text={`করুণাময়ী মা সারদা বিপণী — ${product.name} (${product.price}):`}
+                    url={`/shop`}
+                    variant="icon"
+                    className="w-7 h-7"
+                  />
+                </div>
+
+                {/* Product Image */}
+                <div className="aspect-square relative bg-secondary/10 overflow-hidden">
+                  <Image 
+                    src={product.image} 
+                    alt={product.name} 
+                    fill 
+                    className="object-cover group-hover:scale-105 transition-transform duration-300" 
+                  />
+                </div>
+
+                {/* Details */}
+                <div className="p-3 flex flex-col flex-1">
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-[9px] text-foreground/50 font-bold uppercase tracking-wider">
+                      {product.categoryName}
+                    </span>
+                    <div className="flex items-center text-[10px] text-amber-500 font-bold gap-0.5">
+                      <Star size={11} fill="currentColor" />
+                      <span>{product.rating}</span>
+                    </div>
+                  </div>
+
+                  <h2 className="text-xs font-bold text-foreground mb-2 line-clamp-2 leading-snug flex-1">
+                    {language === "bn" ? product.name : product.nameEn}
+                  </h2>
+
+                  {/* Price and Discount */}
+                  <div className="flex items-center justify-between mt-auto pt-2 border-t border-secondary/10">
+                    <div>
+                      <span className="text-[11px] text-foreground/40 line-through block leading-none">
+                        ₹{product.originalPrice}
+                      </span>
+                      <span className="text-primary font-extrabold text-sm leading-tight">
+                        ₹{product.price}
+                      </span>
+                    </div>
+
+                    <button 
+                      onClick={() => handleAdd(product)}
+                      className={`p-2 rounded-xl transition-all shadow-sm flex items-center justify-center ${
+                        isAdded 
+                          ? "bg-emerald-600 text-white" 
+                          : "bg-primary text-white hover:bg-primary/90"
+                      }`}
+                      title="কার্টে যোগ করুন"
+                    >
+                      {isAdded ? <Check size={16} /> : <Plus size={16} />}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }

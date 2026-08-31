@@ -1,48 +1,32 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Link from "next/link";
-import { ArrowLeft, Calendar, MapPin, Clock, ArrowRight } from "lucide-react";
+import { ArrowLeft, Calendar, MapPin, Clock, ArrowRight, Sparkles, Clock8 } from "lucide-react";
 import { useTranslation } from "@/lib/i18n/LanguageContext";
 import ShareButton from "@/components/common/ShareButton";
 
 export default function EventsPage() {
   const { t, language } = useTranslation();
+  const [events, setEvents] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
   
-  const events = [
-    {
-      id: "1",
-      title: language === "bn" ? "শ্রীরামকৃষ্ণ জন্মতিথি উৎসব" : "Sri Ramakrishna Janmatithi Utsav",
-      date: language === "bn" ? "১৫ মার্চ ২০২৬" : "March 15, 2026",
-      time: language === "bn" ? "সকাল ৮:০০ - বিকাল ৫:০০" : "8:00 AM - 5:00 PM",
-      location: language === "bn" ? "মূল মন্দির প্রাঙ্গণ" : "Main Temple Premises",
-      description: language === "bn" ? "সারাদিনব্যাপী পূজা, হোম, ভজন ও প্রসাদ বিতরণ।" : "Day-long puja, homa, bhajans and prasad distribution.",
-      price: 150,
-      availableTickets: 150,
-      image: "/event-festival.jpg"
-    },
-    {
-      id: "2",
-      title: language === "bn" ? "বিশেষ শিবরাত্রি পূজা" : "Special Maha Shivaratri Puja",
-      date: language === "bn" ? "২৬ ফেব্রুয়ারি ২০২৬" : "February 26, 2026",
-      time: language === "bn" ? "সন্ধ্যা ৬:০০ - ভোর ৬:০০" : "6:00 PM - 6:00 AM",
-      location: language === "bn" ? "শিব মন্দির" : "Shiva Temple",
-      description: language === "bn" ? "চার প্রহরব্যাপী বিশেষ শিবরাত্রি পূজা।" : "Four prahar special Shivaratri puja.",
-      price: 200,
-      availableTickets: 0,
-      image: "/event-shivratri.jpg"
-    },
-    {
-      id: "3",
-      title: language === "bn" ? "শ্রীমা সারদা দেবীর বিশেষ আরতি ও ভক্তি সম্মেলন" : "Holy Mother Special Arati & Bhakta Sammelan",
-      date: language === "bn" ? "২ এপ্রিল ২০২৬" : "April 2, 2026",
-      time: language === "bn" ? "বিকাল ৪:০০ - রাত ৮:০০" : "4:00 PM - 8:00 PM",
-      location: language === "bn" ? "নাটমন্দির ও অডিটোরিয়াম" : "Natmandir & Auditorium",
-      description: language === "bn" ? "মাতৃসাধকদের বিশেষ আধ্যাত্মিক সম্মেলন ও ভক্তিগীতি।" : "Spiritual discourse, devotional songs and prasad offering.",
-      price: 100,
-      availableTickets: 85,
-      image: "/event-arati.jpg"
-    }
-  ];
+  useEffect(() => {
+    const loadEvents = async () => {
+      try {
+        const res = await fetch("/api/admin/events");
+        const data = await res.json();
+        if (data.success) {
+          setEvents(data.events);
+        }
+      } catch (err) {
+        console.error("Failed to load events", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadEvents();
+  }, []);
 
   return (
     <div className="flex flex-col min-h-screen max-w-md mx-auto bg-background p-4 pt-8 pb-20">
@@ -66,8 +50,28 @@ export default function EventsPage() {
       </div>
 
       <div className="space-y-6">
-        {events.length === 0 ? (
-          <p className="text-center text-foreground/60 py-10">{t('events.noEvents')}</p>
+        {loading ? (
+          <div className="flex justify-center items-center py-20">
+            <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary"></div>
+          </div>
+        ) : events.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-20 px-4 text-center">
+            <div className="relative w-24 h-24 mb-6">
+              <div className="absolute inset-0 bg-primary/10 rounded-full animate-ping opacity-75"></div>
+              <div className="relative bg-white border border-primary/20 w-24 h-24 rounded-full flex items-center justify-center shadow-lg">
+                <Calendar size={36} className="text-primary animate-pulse" />
+                <Sparkles size={16} className="text-amber-500 absolute top-4 right-4 animate-bounce" />
+              </div>
+            </div>
+            <h3 className="text-xl font-black text-foreground mb-2 tracking-tight">
+              {language === "bn" ? "শিগগিরই আসছে!" : "Coming Soon!"}
+            </h3>
+            <p className="text-sm text-foreground/60 max-w-[250px] leading-relaxed">
+              {language === "bn" 
+                ? "বর্তমানে কোনো আসন্ন অনুষ্ঠান নেই। নতুন উৎসব ও অনুষ্ঠানের আপডেটের জন্য আবার দেখুন।" 
+                : "There are no upcoming events at the moment. Check back later for new festivals and gatherings."}
+            </p>
+          </div>
         ) : (
           events.map(event => (
             <div key={event.id} className="bg-white rounded-2xl overflow-hidden shadow-sm border border-secondary/20 hover:border-primary/40 transition-colors">
