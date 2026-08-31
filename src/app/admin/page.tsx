@@ -94,8 +94,8 @@ export default function AdminDashboardPage() {
   const [activeTab, setActiveTab] = useState<"analytics" | "revenue" | "products" | "events" | "staff" | "videos" | "library" | "gallery" | "orders" | "settings">("analytics");
   
   // Admin Auth Gate State
-  const [gateEmail, setGateEmail] = useState("karunamoyeemasarada@gmail.com");
-  const [gatePassword, setGatePassword] = useState("admin123456");
+  const [gateEmail, setGateEmail] = useState("");
+  const [gatePassword, setGatePassword] = useState("");
   const [gateLoading, setGateLoading] = useState(false);
   const [gateError, setGateError] = useState("");
 
